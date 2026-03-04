@@ -887,7 +887,7 @@
         }
         .testimonial-author {
             display: flex;
-            align-items: center;
+            align-items: center,
             gap: 16px;
         }
         .author-avatar {
@@ -901,7 +901,7 @@
         .author-info span { font-size: 13px; color: var(--text-secondary); }
 
         /* =========================================
-           FAQ SECTION (UPDATED: NO HIDE, NO ARROW)
+           FAQ SECTION (STATIC)
            ========================================= */
         .faq-section {
             padding: 100px 0;
@@ -916,9 +916,7 @@
             border: 1px solid var(--border-light);
             border-radius: 16px;
             margin-bottom: 16px;
-            /* Removed transition and hover effect since it is static now */
             box-shadow: var(--shadow-sm);
-            /* Force items to be open */
             overflow: visible; 
         }
         
@@ -928,13 +926,12 @@
             font-size: 16px;
             color: var(--text-main);
             background: #fff;
-            cursor: default; /* Cursor default as interaction is disabled */
-            pointer-events: none; /* Disable clicking */
-            margin-bottom: 12px; /* Space between Q and A */
+            cursor: default; 
+            pointer-events: none; 
+            margin-bottom: 12px; 
         }
 
         .faq-answer {
-            /* Always visible styles */
             max-height: none;
             opacity: 1;
             padding: 0 24px 24px 24px;
@@ -942,7 +939,76 @@
             background: #fafafa;
             line-height: 1.7;
             font-size: 15px;
-            /* Removed transition */
+        }
+
+        /* =========================================
+           PRODUCT CARD STYLE
+           ========================================= */
+        .product-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-light);
+            transition: 0.4s var(--ease);
+            display: flex;
+            flex-direction: column;
+            text-align: left;
+            position: relative;
+        }
+        .product-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary);
+        }
+        .product-img-wrap {
+            height: 200px;
+            background: #f1f5f9;
+            position: relative;
+            overflow: hidden;
+        }
+        .product-img-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: 0.5s;
+        }
+        .product-card:hover .product-img-wrap img {
+            transform: scale(1.05);
+        }
+        .product-content {
+            padding: 32px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+        .product-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--primary);
+            font-weight: 700;
+            margin-bottom: 12px;
+            display: block;
+        }
+        .product-title {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--text-main);
+            margin-bottom: 12px;
+            line-height: 1.2;
+        }
+        .product-desc {
+            color: var(--text-secondary);
+            font-size: 15px;
+            margin-bottom: 24px;
+            line-height: 1.6;
+            flex-grow: 1;
+        }
+        .product-btn {
+            margin-top: auto;
+            width: 100%;
+            justify-content: center;
         }
 
         /* =========================================
@@ -1128,7 +1194,7 @@
 
     <!-- Page Transition Overlay -->
     <div id="pageTransitionOverlay" class="page-transition-overlay">
-        <img src="https://i.ibb.co/dsfCkWFT/DDNEX-05.png" alt="DDNEX®" class="pt-logo">
+        <img src="https://i.ibb.co/bMyN2dwG/DDNEX-03.png" alt="DDNEX®" class="pt-logo">
     </div>
 
     <!-- Scroll Progress -->
@@ -1142,8 +1208,7 @@
             </a>
 
             <nav class="nav-desktop" aria-label="Main Navigation">
-                <!-- Using handleNavigation for animation -->
-                <a href="/services" class="nav-link active" onclick="handleNavigation('home', event)">Home</a>
+                <a href="/home" class="nav-link active" onclick="handleNavigation('home', event)">Home</a>
                 <a href="/services" class="nav-link" onclick="handleNavigation('services', event)">Services</a>
                 <a href="/industries" class="nav-link" onclick="handleNavigation('industries', event)">Industries</a>
                 <a href="/about" class="nav-link" onclick="handleNavigation('about', event)">About Us</a>
@@ -1536,7 +1601,7 @@
                 </div>
             </div>
 
-            <!-- FAQ (UPDATED: Always Visible, No Icons) -->
+            <!-- FAQ (Static) -->
             <div class="faq-section">
                 <div class="container faq-container">
                     <div class="section-title text-center reveal">
@@ -1813,6 +1878,43 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- =========================================
+                         NEW SECTION: PRODUCTS
+                         ========================================= -->
+                    <div class="section-title text-center reveal" style="margin-top: 100px;">
+                        <span class="badge">Our Ecosystem</span>
+                        <h2>Products by Us</h2>
+                        <p>Innovative solutions developed by DDNEX® to power your business.</p>
+                    </div>
+                    
+                    <div class="grid-1" style="max-width: 800px; margin: 0 auto;">
+                        <!-- DDNetwork One Product Card -->
+                        <div class="product-card reveal">
+                            <div class="product-img-wrap">
+                                <!-- Using a generic tech/office image for the product visual -->
+                                <img src="https://picsum.photos/seed/ddnetone/800/400" alt="DDNetwork One Dashboard" loading="lazy">
+                            </div>
+                            <div class="product-content">
+                                <span class="product-label">Flagship Platform</span>
+                                <h3 class="product-title">DDNetwork One</h3>
+                                <p class="product-desc">
+                                    A comprehensive all-in-one business management platform designed for SMEs and enterprises. 
+                                    Streamline operations, manage resources, and scale your business with our integrated ecosystem.
+                                </p>
+                                <div style="margin-bottom: 24px;">
+                                    <span class="tech-tag">Cloud ERP</span>
+                                    <span class="tech-tag">CRM</span>
+                                    <span class="tech-tag">Analytics</span>
+                                </div>
+                                <a href="https://ddnet.my" target="_blank" rel="noopener noreferrer" class="btn btn-primary product-btn">
+                                    Visit ddnet.my <i class="ri-external-link-line"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End Products -->
+
                 </div>
             </div>
         </section>
@@ -2024,6 +2126,7 @@
                 <div class="footer-col">
                     <h4>Legal</h4>
                     <ul>
+                        <!-- Fixed: Removed href="#" and added handleNavigation -->
                         <li><a href="/privacy" onclick="handleNavigation('privacy', event); return false;">Privacy Policy</a></li>
                         <li><a href="/terms" onclick="handleNavigation('terms', event); return false;">Terms of Service</a></li>
                         <li><a href="/security" onclick="handleNavigation('security', event); return false;">Security Policy</a></li>
@@ -2194,8 +2297,8 @@
                 }
             });
 
-            // 6. Scroll to top
-            window.scrollTo({ top: 0, behavior: 'auto' }); // Instant scroll during transition
+            // 6. Scroll to top (Important for Legal pages to ensure visibility)
+            window.scrollTo({ top: 0, behavior: 'auto' }); 
 
             // 7. Re-trigger animations for the new section
             setTimeout(() => {
@@ -2206,9 +2309,6 @@
         // --- Handle Browser Back/Forward Buttons ---
         window.onpopstate = function(event) {
             if(event.state && event.state.page) {
-                // We use the standard navigateTo directly here to avoid re-animating the transition
-                // when just using back button, or you can force animation if preferred.
-                // Here we just switch content immediately for responsiveness.
                 const pageId = event.state.page;
                 
                 // Update UI without transition delay

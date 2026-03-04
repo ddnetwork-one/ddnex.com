@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>DDNEX | Enterprise Digital Excellence</title>
-    <meta name="description" content="DDNEX builds secure, scalable, and future-ready digital solutions for leading organizations.">
+    <title>DDNEX.com</title>
+    <meta name="description" content="DDNEX - Malaysian Local and International Website Solutions">
     
     <!-- UPDATED: Favicon -->
     <link rel="icon" type="image/png" href="https://i.ibb.co/TD3R1MYw/DDNEXFAVICON.png">
@@ -375,15 +375,18 @@
             transition: transform 0.1s linear; /* Smooth catchup */
         }
 
-        /* 2. Scroll Reveal - Enhanced */
+        /* 2. Scroll Reveal - Enhanced with Unreveal Logic */
         .reveal {
             opacity: 0;
-            transform: translateY(40px) scale(0.98);
-            transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
+            transform: translateY(60px) scale(0.98);
+            transition: opacity 0.8s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+            filter: blur(5px); /* Blur effect for unreveal state */
         }
+        
         .reveal.active { 
             opacity: 1; 
             transform: translateY(0) scale(1); 
+            filter: blur(0);
         }
 
         /* 3. Staggered Delays for Grid Items */
@@ -747,6 +750,111 @@
         .contact-form-panel { padding: 60px 40px; }
         
         /* =========================================
+           NEW HOME SECTIONS (Testimonials, FAQ)
+           ========================================= */
+        
+        /* Testimonials */
+        .testimonials-section {
+            background: linear-gradient(to bottom, #f8fafc, #fff);
+            padding: 100px 0;
+            border-top: 1px solid var(--border-light);
+        }
+        .testimonial-card {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-light);
+            position: relative;
+        }
+        .quote-icon {
+            font-size: 40px;
+            color: var(--primary-light);
+            position: absolute;
+            top: 30px; left: 30px;
+            opacity: 0.5;
+        }
+        .testimonial-text {
+            font-size: 18px;
+            color: var(--text-main);
+            font-style: italic;
+            margin-bottom: 24px;
+            position: relative;
+            z-index: 1;
+        }
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .author-avatar {
+            width: 50px; height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .author-info h5 { font-size: 16px; font-weight: 700; margin-bottom: 2px; }
+        .author-info span { font-size: 13px; color: var(--text-secondary); }
+
+        /* FAQ */
+        .faq-section {
+            padding: 100px 0;
+            background: white;
+        }
+        .faq-item {
+            border-bottom: 1px solid var(--border-light);
+            padding: 24px 0;
+        }
+        .faq-question {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 18px;
+            color: var(--text-main);
+            transition: color 0.3s;
+        }
+        .faq-question:hover { color: var(--primary); }
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease, opacity 0.3s ease;
+            opacity: 0;
+            color: var(--text-secondary);
+            margin-top: 0;
+        }
+        .faq-item.active .faq-answer {
+            max-height: 200px; /* Adjust based on content */
+            opacity: 1;
+            margin-top: 12px;
+        }
+        .faq-icon {
+            transition: transform 0.3s ease;
+        }
+        .faq-item.active .faq-icon {
+            transform: rotate(180deg);
+        }
+
+        /* Success Stories */
+        .case-study-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-light);
+            transition: 0.3s;
+        }
+        .case-study-card:hover { transform: translateY(-8px); box-shadow: var(--shadow-lg); }
+        .case-img { height: 200px; overflow: hidden; }
+        .case-img img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
+        .case-study-card:hover .case-img img { transform: scale(1.05); }
+        .case-content { padding: 24px; }
+        .case-tag {
+            font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px;
+            color: var(--primary); font-weight: 700; margin-bottom: 8px; display: block;
+        }
+
+        /* =========================================
            LEGAL PAGES (NEW)
            ========================================= */
         .legal-content {
@@ -1088,6 +1196,54 @@
                 </div>
             </div>
 
+            <!-- =========================================
+                 NEW: SUCCESS STORIES SECTION
+                 ========================================= -->
+            <div class="section-padding">
+                <div class="container">
+                    <div class="section-title text-center reveal">
+                        <span class="badge">Success Stories</span>
+                        <h2>Real Results for Real Business</h2>
+                        <p>See how we helped organizations transform their operations.</p>
+                    </div>
+                    <div class="grid-3">
+                        <div class="case-study-card reveal">
+                            <div class="case-img">
+                                <img src="https://picsum.photos/seed/health1/600/400" alt="Healthcare Tech">
+                            </div>
+                            <div class="case-content">
+                                <span class="case-tag">Healthcare</span>
+                                <h3>Digital Patient Records</h3>
+                                <p style="font-size: 14px; color: var(--text-secondary); margin-bottom: 16px;">Migrated legacy records to a secure cloud platform, reducing retrieval time by 80%.</p>
+                                <a href="#" style="color: var(--primary); font-weight: 600; font-size: 14px;">Read Case Study <i class="ri-arrow-right-line"></i></a>
+                            </div>
+                        </div>
+                        <div class="case-study-card reveal">
+                            <div class="case-img">
+                                <img src="https://picsum.photos/seed/finance1/600/400" alt="FinTech">
+                            </div>
+                            <div class="case-content">
+                                <span class="case-tag">FinTech</span>
+                                <h3>Automated Audit System</h3>
+                                <p style="font-size: 14px; color: var(--text-secondary); margin-bottom: 16px;">Implemented AI-driven anomaly detection for a leading bank, saving millions in fraud.</p>
+                                <a href="#" style="color: var(--primary); font-weight: 600; font-size: 14px;">Read Case Study <i class="ri-arrow-right-line"></i></a>
+                            </div>
+                        </div>
+                        <div class="case-study-card reveal">
+                            <div class="case-img">
+                                <img src="https://picsum.photos/seed/logistics1/600/400" alt="Logistics">
+                            </div>
+                            <div class="case-content">
+                                <span class="case-tag">Logistics</span>
+                                <h3>Real-time Fleet Tracking</h3>
+                                <p style="font-size: 14px; color: var(--text-secondary); margin-bottom: 16px;">Built an IoT dashboard to track 500+ trucks, improving delivery efficiency by 30%.</p>
+                                <a href="#" style="color: var(--primary); font-weight: 600; font-size: 14px;">Read Case Study <i class="ri-arrow-right-line"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Promo Banner -->
             <div class="container reveal">
                 <div class="promo-banner">
@@ -1129,6 +1285,95 @@
                             <div class="step-number">04</div>
                             <div class="step-title">Launch</div>
                             <p style="font-size: 14px; color: var(--text-secondary);">CI/CD pipelines, rigorous testing, and market deployment.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- =========================================
+                 NEW: TESTIMONIALS SECTION
+                 ========================================= -->
+            <div class="testimonials-section">
+                <div class="container">
+                    <div class="section-title text-center reveal">
+                        <span class="badge">Testimonials</span>
+                        <h2>What Our Clients Say</h2>
+                        <p>Don't just take our word for it.</p>
+                    </div>
+                    <div class="grid-2">
+                        <div class="testimonial-card reveal">
+                            <i class="ri-double-quotes-l quote-icon"></i>
+                            <p class="testimonial-text">"DDNEX transformed our entire digital infrastructure. Their attention to security and scalability is unmatched in the region. We launched our new platform 3 months ahead of schedule."</p>
+                            <div class="testimonial-author">
+                                <img src="https://picsum.photos/seed/sarah/100/100" class="author-avatar" alt="Sarah L.">
+                                <div class="author-info">
+                                    <h5>Sarah Lim</h5>
+                                    <span>CTO, Tiara Advance Resources</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="testimonial-card reveal">
+                            <i class="ri-double-quotes-l quote-icon"></i>
+                            <p class="testimonial-text">"The team at DDNEX doesn't just follow requirements; they challenge them to find better solutions. Their agile approach kept us involved at every step."</p>
+                            <div class="testimonial-author">
+                                <img src="https://picsum.photos/seed/james/100/100" class="author-avatar" alt="James K.">
+                                <div class="author-info">
+                                    <h5>James Kumar</h5>
+                                    <span>Director, PNE Arena</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- =========================================
+                 NEW: FAQ SECTION
+                 ========================================= -->
+            <div class="faq-section">
+                <div class="container" style="max-width: 800px;">
+                    <div class="section-title text-center reveal">
+                        <h2>Frequently Asked Questions</h2>
+                        <p>Common questions about our engagement model.</p>
+                    </div>
+                    
+                    <div class="faq-item reveal">
+                        <div class="faq-question" onclick="toggleFaq(this)">
+                            What industries do you specialize in?
+                            <i class="ri-arrow-down-s-line faq-icon"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>While we have deep experience across Healthcare, Finance, and Logistics, our expertise in cloud-native architectures applies to any data-intensive industry. We adapt our solutions to meet specific regulatory and operational needs.</p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item reveal">
+                        <div class="faq-question" onclick="toggleFaq(this)">
+                            Do you offer ongoing maintenance?
+                            <i class="ri-arrow-down-s-line faq-icon"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Yes, we offer comprehensive SLA-based support and maintenance packages. This includes 24/7 monitoring, security patching, and feature updates to ensure your systems remain robust and up-to-date.</p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item reveal">
+                        <div class="faq-question" onclick="toggleFaq(this)">
+                            How do you handle data security?
+                            <i class="ri-arrow-down-s-line faq-icon"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Security is integrated into our development lifecycle (DevSecOps). We adhere to ISO 27001 standards, conduct regular penetration testing, and ensure compliance with GDPR and local data protection laws.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item reveal">
+                        <div class="faq-question" onclick="toggleFaq(this)">
+                            What is your typical project timeline?
+                            <i class="ri-arrow-down-s-line faq-icon"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Timelines vary based on complexity. A typical MVP (Minimum Viable Product) takes 8-12 weeks, while full enterprise system migrations can span 6-12 months. We provide detailed roadmaps during the discovery phase.</p>
                         </div>
                     </div>
                 </div>
@@ -1460,7 +1705,7 @@
                 <div class="container">
                     <div class="legal-content reveal">
                         <h1>Privacy Policy</h1>
-                        <p>Last updated: January 2025</p>
+                        <p>Last updated: March 2026</p>
                         
                         <h2>1. Introduction</h2>
                         <p>DDNEX Solutions Sdn Bhd ("we", "our", or "us") is committed to protecting your privacy. This Privacy Policy explains how your personal information is collected, used, and disclosed by DDNEX.</p>
@@ -1496,7 +1741,7 @@
                 <div class="container">
                     <div class="legal-content reveal">
                         <h1>Terms of Service</h1>
-                        <p>Last updated: January 2025</p>
+                        <p>Last updated: March 2026</p>
                         
                         <h2>1. Acceptance of Terms</h2>
                         <p>By accessing and using the DDNEX website and services, you accept and agree to be bound by the terms and provisions of this agreement.</p>
@@ -1527,7 +1772,7 @@
                 <div class="container">
                     <div class="legal-content reveal">
                         <h1>Security Policy</h1>
-                        <p>Last updated: January 2025</p>
+                        <p>Last updated: March 2026</p>
                         
                         <h2>1. Commitment to Security</h2>
                         <p>DDNEX is committed to maintaining the highest standards of information security. Our approach is aligned with ISO 27001 best practices to ensure the confidentiality, integrity, and availability of client data.</p>
@@ -1591,7 +1836,7 @@
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2025 DDNEX Solutions Sdn Bhd. All rights reserved.</p>
+                <p>&copy; 2026 DDNEX. All rights reserved.</p>
                 <div style="display: flex; gap: 20px;">
                     <a href="#"><i class="ri-linkedin-fill"></i></a>
                     <a href="#"><i class="ri-twitter-x-fill"></i></a>
@@ -1656,6 +1901,12 @@
             } else {
                 body.style.overflow = 'auto';
             }
+        }
+
+        // --- FAQ Toggle ---
+        function toggleFaq(element) {
+            const item = element.parentElement;
+            item.classList.toggle('active');
         }
 
         // --- Tab Switching for Tech Stack ---
@@ -1745,15 +1996,17 @@
             }
         });
 
-        // 2. Intersection Observer for Reveal Animations
+        // 2. Intersection Observer for Reveal Animations (With Unreveal)
         function runScrollAnimations() {
             const observerOptions = {
-                threshold: 0.1,
+                threshold: 0.15, // Trigger when 15% visible
                 rootMargin: "0px 0px -50px 0px"
             };
 
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
+                    // 'isIntersecting' handles the reveal.
+                    // If not intersecting, we remove the class (unreveal).
                     if (entry.isIntersecting) {
                         entry.target.classList.add('active');
                         
@@ -1762,6 +2015,8 @@
                         if(counter) {
                             startCounter(counter);
                         }
+                    } else {
+                        entry.target.classList.remove('active');
                     }
                 });
             }, observerOptions);

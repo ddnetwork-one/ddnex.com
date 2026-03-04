@@ -560,6 +560,7 @@
         .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 32px; }
         .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 32px; }
         .grid-4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 24px; }
+        .grid-1 { display: grid; grid-template-columns: 1fr; gap: 24px; }
 
         .card {
             background: white;
@@ -1047,7 +1048,7 @@
         
         .footer-col h4 { color: white; font-size: 16px; font-weight: 700; margin-bottom: 24px; }
         .footer-col ul li { margin-bottom: 14px; }
-        .footer-col a { color: #94a3b8; font-size: 14px; transition: 0.2s; display: inline-block; }
+        .footer-col a { color: #94a3b8; font-size: 14px; transition: 0.2s; display: inline-block; cursor: pointer;}
         .footer-col a:hover { color: var(--primary); padding-left: 6px; }
 
         .footer-bottom {
@@ -1294,7 +1295,7 @@
                                 </div>
                                 <div style="width: 1px; height: 40px; background: var(--border-light);"></div>
                                 <div>
-                                    <div style="font-size: 24px; font-weight: 800; color: var(--text-main);">Google Intergations</div>
+                                    <div style="font-size: 24px; font-weight: 800; color: var(--text-main);">Google Integations</div>
                                     <div style="font-size: 12px; color: var(--text-secondary);">Fast Responsiveness</div>
                                 </div>
                             </div>
@@ -2014,7 +2015,7 @@
                 <div class="container">
                     <h1 class="page-title text-center reveal" style="font-size: 32px;">Privacy Policy</h1>
                     <div class="legal-content reveal">
-                        <p style="font-size: 13px; color: var(--text-muted);">Last updated: January 2025</p>
+                        <p style="font-size: 13px; color: var(--text-muted);">Last updated: March 2026</p>
                         
                         <h2>1. Introduction</h2>
                         <p>DDNEX® ("we", "our", or "us") is committed to protecting your privacy. This Privacy Policy explains how your personal information is collected, used, and disclosed by DDNEX®.</p>
@@ -2049,7 +2050,7 @@
                 <div class="container">
                     <h1 class="page-title text-center reveal" style="font-size: 32px;">Terms of Service</h1>
                     <div class="legal-content reveal">
-                        <p style="font-size: 13px; color: var(--text-muted);">Last updated: January 2025</p>
+                        <p style="font-size: 13px; color: var(--text-muted);">Last updated: March 2026</p>
                         
                         <h2>1. Acceptance of Terms</h2>
                         <p>By accessing and using the DDNEX® website and services, you accept and agree to be bound by the terms and provisions of this agreement.</p>
@@ -2076,7 +2077,7 @@
                 <div class="container">
                     <h1 class="page-title text-center reveal" style="font-size: 32px;">Security Policy</h1>
                     <div class="legal-content reveal">
-                        <p style="font-size: 13px; color: var(--text-muted);">Last updated: January 2025</p>
+                        <p style="font-size: 13px; color: var(--text-muted);">Last updated: March 2026</p>
                         
                         <h2>1. Commitment to Security</h2>
                         <p>DDNEX® is committed to maintaining the highest standards of information security. Our approach is aligned with ISO 27001 best practices.</p>
@@ -2127,9 +2128,9 @@
                     <h4>Legal</h4>
                     <ul>
                         <!-- Fixed: Removed href="#" and added handleNavigation -->
-                        <li><a href="/privacy" onclick="handleNavigation('privacy', event); return false;">Privacy Policy</a></li>
-                        <li><a href="/terms" onclick="handleNavigation('terms', event); return false;">Terms of Service</a></li>
-                        <li><a href="/security" onclick="handleNavigation('security', event); return false;">Security Policy</a></li>
+                        <li><a onclick="handleNavigation('privacy', event); return false;">Privacy Policy</a></li>
+                        <li><a onclick="handleNavigation('terms', event); return false;">Terms of Service</a></li>
+                        <li><a onclick="handleNavigation('security', event); return false;">Security Policy</a></li>
                     </ul>
                 </div>
             </div>
@@ -2197,10 +2198,7 @@
             }
         };
 
-        // List of pages to apply the "Swipe Up/Down" animation to
-        const animatedPages = ['home', 'services', 'industries', 'about', 'contact'];
-
-        // --- Main Navigation Handler (Handles Animation, Menu, & SEO) ---
+        // --- Main Navigation Handler ---
         function handleNavigation(pageId, event) {
             if(event) event.preventDefault();
 
@@ -2210,24 +2208,23 @@
                 toggleMenu();
             }
 
-            // 2. Determine transition type
-            const useSwipeAnimation = animatedPages.includes(pageId);
-
-            if (useSwipeAnimation) {
-                playPageTransition(pageId);
-            } else {
-                // Standard navigation for legal pages
-                navigateTo(pageId);
+            // 2. Check if we are already on this page (to prevent unnecessary animation reload)
+            const currentSection = document.querySelector('.page-section.active');
+            if (currentSection && currentSection.id === pageId) {
+                return; 
             }
+
+            // 3. Trigger Animation & Route Change
+            // We use the animation for ALL pages now to ensure consistency
+            playPageTransition(pageId);
         }
 
         // --- Play Swipe Transition ---
         function playPageTransition(pageId) {
             const overlay = document.getElementById('pageTransitionOverlay');
             const logo = overlay.querySelector('.pt-logo');
-            const currentSection = document.querySelector('.page-section.active');
-
-            // Step 1: Swipe Up
+            
+            // Step 1: Swipe Up (Cover Screen)
             overlay.classList.remove('swipe-down');
             overlay.classList.add('swipe-up', 'covering');
             
@@ -2238,8 +2235,9 @@
             }, 200);
 
             // Step 2: Change Content behind the scenes (mid-animation)
+            // We wait for the swipe up animation to mostly complete (600ms is animation duration)
             setTimeout(() => {
-                // Update actual navigation logic (includes SEO URL update)
+                // Update Navigation State
                 updateNavigationState(pageId);
                 
                 // Prepare for swipe down
@@ -2252,7 +2250,7 @@
                     logo.style.transform = 'scale(0.8)';
                 }, 100);
 
-            }, 600); // Wait for swipe up to finish
+            }, 600); 
 
             // Step 3: Clean up classes after swipe down finishes
             setTimeout(() => {
@@ -2263,7 +2261,6 @@
         // --- Core Navigation Logic (Includes SEO Updates) ---
         function updateNavigationState(pageId) {
             // 1. Update URL (History API) for SEO
-            // We map 'home' to '/' or '/home' depending on preference, here '/' is cleaner
             const urlPath = pageId === 'home' ? '/' : '/' + pageId;
             window.history.pushState({page: pageId}, "", urlPath);
 
@@ -2297,7 +2294,7 @@
                 }
             });
 
-            // 6. Scroll to top (Important for Legal pages to ensure visibility)
+            // 6. Scroll to top 
             window.scrollTo({ top: 0, behavior: 'auto' }); 
 
             // 7. Re-trigger animations for the new section
@@ -2311,29 +2308,8 @@
             if(event.state && event.state.page) {
                 const pageId = event.state.page;
                 
-                // Update UI without transition delay
-                document.querySelectorAll('.page-section').forEach(section => {
-                    section.classList.remove('active');
-                });
-                const targetSection = document.getElementById(pageId);
-                if(targetSection) targetSection.classList.add('active');
-
-                // Update Meta
-                const data = pageData[pageId];
-                if (data) {
-                    document.title = data.title;
-                    document.getElementById('dynamic-desc').setAttribute('content', data.desc);
-                }
-
-                // Update Nav State
-                document.querySelectorAll('.nav-link').forEach(link => {
-                    link.classList.remove('active');
-                    if(link.getAttribute('onclick').includes(`'${pageId}'`)) {
-                        link.classList.add('active');
-                    }
-                });
-                
-                window.scrollTo({ top: 0, behavior: 'auto' });
+                // Update UI without transition delay for history navigation
+                updateNavigationState(pageId);
             }
         };
 

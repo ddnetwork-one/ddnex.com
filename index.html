@@ -63,7 +63,7 @@
             --font-main: 'Inter', system-ui, -apple-system, sans-serif;
             
             /* Layout */
-            --header-height: 80px;
+            --header-height: 70px; /* Slightly smaller base for mobile */
             --container-width: 1280px;
             --radius-md: 12px;
             --radius-lg: 24px; 
@@ -87,7 +87,8 @@
             line-height: 1.6;
             -webkit-font-smoothing: antialiased;
             overflow-x: hidden;
-            font-size: 15px; 
+            /* Ensures mobile text isn't too small */
+            font-size: 16px; 
         }
 
         a { text-decoration: none; color: inherit; transition: color 0.3s var(--ease); }
@@ -154,11 +155,11 @@
         .container {
             max-width: var(--container-width);
             margin: 0 auto;
-            padding: 0 24px;
+            padding: 0 20px; /* Increased padding slightly for mobile edges */
             position: relative;
         }
 
-        .section-padding { padding: 100px 0; }
+        .section-padding { padding: 80px 0; }
         .text-center { text-align: center; }
         .text-gradient {
             background: linear-gradient(135deg, var(--text-main) 0%, var(--primary) 100%);
@@ -168,7 +169,7 @@
         }
 
         .page-title {
-            font-size: clamp(32px, 5vw, 48px);
+            font-size: clamp(28px, 5vw, 48px); /* Smaller base for mobile */
             font-weight: 800;
             letter-spacing: -0.03em;
             margin-bottom: 20px;
@@ -178,11 +179,11 @@
         .badge {
             display: inline-flex;
             align-items: center;
-            padding: 6px 16px;
+            padding: 8px 18px; /* Larger padding for touch */
             background: var(--primary-light);
             color: var(--primary);
             border-radius: 100px;
-            font-size: 0.8rem; 
+            font-size: 0.85rem; /* Slightly larger */
             font-weight: 700;
             margin-bottom: 24px;
             border: 1px solid rgba(15, 98, 254, 0.15);
@@ -190,13 +191,13 @@
         }
 
         .section-title {
-            margin-bottom: 60px;
+            margin-bottom: 50px;
             max-width: 800px;
             margin-left: auto;
             margin-right: auto;
         }
-        .section-title h2 { font-size: clamp(24px, 4vw, 32px); font-weight: 700; letter-spacing: -0.02em; margin-bottom: 16px; line-height: 1.2; }
-        .section-title p { color: var(--text-secondary); font-size: 16px; }
+        .section-title h2 { font-size: clamp(22px, 4vw, 32px); font-weight: 700; letter-spacing: -0.02em; margin-bottom: 16px; line-height: 1.2; }
+        .section-title p { color: var(--text-secondary); font-size: 16px; line-height: 1.6; }
 
         /* =========================================
            HEADER
@@ -216,7 +217,7 @@
         }
         header.scrolled { 
             box-shadow: var(--shadow-sm); 
-            height: 70px;
+            height: 60px;
             background: rgba(255, 255, 255, 0.95);
         }
 
@@ -228,7 +229,7 @@
         }
 
         .brand-logo {
-            height: 38px; 
+            height: 32px; /* Smaller for mobile */
             width: auto;
             object-fit: contain;
             cursor: pointer;
@@ -239,7 +240,7 @@
         /* Desktop Nav */
         .nav-desktop { display: none; gap: 36px; align-items: center; }
         .nav-link {
-            font-size: 14px; 
+            font-size: 15px; 
             font-weight: 600;
             color: var(--text-secondary);
             position: relative;
@@ -257,10 +258,10 @@
 
         /* CTA Button */
         .btn {
-            padding: 12px 24px;
-            border-radius: 10px;
+            padding: 14px 28px; /* Larger touch area */
+            border-radius: 12px;
             font-weight: 600;
-            font-size: 14px; 
+            font-size: 15px; 
             transition: all 0.3s var(--ease);
             display: inline-flex;
             align-items: center;
@@ -293,7 +294,7 @@
         }
 
         /* Mobile Toggle */
-        .mobile-toggle { display: flex; flex-direction: column; gap: 6px; cursor: pointer; z-index: 1002; width: 32px; }
+        .mobile-toggle { display: flex; flex-direction: column; gap: 6px; cursor: pointer; z-index: 1002; width: 32px; padding: 5px;}
         .mobile-toggle span {
             width: 100%; height: 2px; background: var(--text-main); border-radius: 2px; transition: 0.4s var(--ease-bounce);
         }
@@ -302,14 +303,14 @@
         .mobile-toggle.active span:nth-child(3) { transform: rotate(-45deg) translate(6px, -6px); }
 
         /* =========================================
-           MOBILE MENU SIDEBAR
+           MOBILE MENU SIDEBAR (UPDATED)
            ========================================= */
         .mobile-menu {
             position: fixed;
             top: 0; 
             right: 0; 
             width: 85%; 
-            max-width: 380px;
+            max-width: 400px;
             height: 100vh;
             background: white;
             box-shadow: -10px 0 30px rgba(0,0,0,0.1);
@@ -317,21 +318,23 @@
             transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
             z-index: 1001;
             display: flex;
-            flex-direction: column;
+            flex-direction: column; /* Stack Header, Scrollable Body, Fixed Footer */
         }
         
         .mobile-menu.open { transform: translateX(0); }
 
         .menu-header {
-            padding: 24px;
+            padding: 20px 24px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             border-bottom: 1px solid var(--border-light);
             background: rgba(255,255,255,0.95);
             backdrop-filter: blur(10px);
+            flex-shrink: 0; /* Don't shrink */
+            height: 70px;
         }
-        .menu-logo { height: 32px; }
+        .menu-logo { height: 30px; }
         .menu-close-btn {
             width: 40px; height: 40px;
             border-radius: 50%;
@@ -343,16 +346,17 @@
         .menu-close-btn:hover { background: #e2e8f0; color: var(--primary); }
 
         .menu-body {
-            flex: 1;
-            overflow-y: auto;
-            padding: 20px 0;
+            flex: 1; /* Take available space */
+            overflow-y: auto; /* Scroll inside this area */
+            padding: 10px 0;
+            -webkit-overflow-scrolling: touch;
         }
 
         .menu-link {
             display: flex;
             align-items: center;
-            padding: 18px 24px;
-            font-size: 16px;
+            padding: 20px 24px; /* More padding */
+            font-size: 17px; /* Larger text */
             font-weight: 600;
             color: var(--text-main);
             border-left: 3px solid transparent;
@@ -371,7 +375,7 @@
 
         .menu-link i {
             margin-right: 16px;
-            font-size: 20px;
+            font-size: 22px;
             color: var(--text-muted);
             transition: 0.3s;
             width: 24px;
@@ -392,29 +396,31 @@
             padding: 24px;
             border-top: 1px solid var(--border-light);
             background: #f8fafc;
+            flex-shrink: 0; /* Don't shrink, stay at bottom */
         }
         .menu-contact-info {
             display: flex;
             align-items: center;
             margin-bottom: 20px;
-            padding: 12px;
+            padding: 16px;
             background: white;
             border-radius: 12px;
             border: 1px solid var(--border-light);
         }
         .menu-contact-icon {
-            width: 36px; height: 36px;
+            width: 40px; height: 40px;
             background: var(--primary-light);
             color: var(--primary);
             border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
-            margin-right: 12px;
+            margin-right: 16px;
+            font-size: 20px;
         }
         .menu-contact-text div:first-child {
-            font-size: 11px; color: var(--text-muted); text-transform: uppercase;
+            font-size: 12px; color: var(--text-muted); text-transform: uppercase; font-weight: 700;
         }
         .menu-contact-text div:last-child {
-            font-size: 13px; font-weight: 600; color: var(--text-main);
+            font-size: 14px; font-weight: 600; color: var(--text-main);
         }
 
         @media(min-width: 992px) {
@@ -465,23 +471,21 @@
            ========================================= */
         .hero {
             position: relative;
-            padding: 140px 0 100px;
+            padding: 100px 0 80px;
             overflow: hidden;
             background: radial-gradient(circle at top right, #f0f9ff 0%, transparent 50%);
         }
         
-        /* NEW: Hero Background Grid Pattern */
+        /* Hero Background Grid Pattern */
         .hero-bg-grid {
             position: absolute;
             inset: 0;
             z-index: -2;
             opacity: 0.5;
-            /* Creates a grid of boxes */
             background-image: 
                 linear-gradient(to right, rgba(15, 98, 254, 0.05) 1px, transparent 1px),
                 linear-gradient(to bottom, rgba(15, 98, 254, 0.05) 1px, transparent 1px);
             background-size: 50px 50px;
-            /* Fades out at edges */
             mask-image: radial-gradient(circle at center, black 40%, transparent 90%);
             -webkit-mask-image: radial-gradient(circle at center, black 40%, transparent 90%);
         }
@@ -504,12 +508,12 @@
         .hero-grid {
             display: grid;
             grid-template-columns: 1fr;
-            gap: 60px;
+            gap: 40px;
             align-items: center;
         }
 
         .hero-content h1 {
-            font-size: clamp(32px, 6vw, 64px);
+            font-size: clamp(32px, 6vw, 56px);
             font-weight: 800;
             letter-spacing: -0.03em;
             line-height: 1.1;
@@ -518,9 +522,9 @@
         }
 
         .hero-content p {
-            font-size: 18px;
+            font-size: 17px; /* Slightly larger for mobile */
             color: var(--text-secondary);
-            margin-bottom: 40px;
+            margin-bottom: 32px;
             max-width: 540px;
             line-height: 1.7;
         }
@@ -528,7 +532,7 @@
         .hero-visual {
             position: relative;
             width: 100%;
-            height: 380px; 
+            height: 320px; 
             background: white;
             border-radius: 24px;
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
@@ -578,6 +582,7 @@
         @media(min-width: 1024px) {
             .hero-grid { grid-template-columns: 1.1fr 1fr; }
             .hero-visual { height: 480px; }
+            .hero { padding: 160px 0 120px; }
         }
 
         /* =========================================
@@ -590,7 +595,7 @@
 
         .card {
             background: white;
-            padding: 32px;
+            padding: 28px; /* Generous padding */
             border-radius: var(--radius-lg);
             border: 1px solid var(--border-light);
             transition: all 0.4s var(--ease);
@@ -625,10 +630,10 @@
         .card:hover .card-icon { transform: scale(1.1) rotate(-5deg); background: var(--primary); color: white; }
 
         .card h3 { font-size: 19px; margin-bottom: 12px; font-weight: 700; }
-        .card p { color: var(--text-secondary); font-size: 15px; margin-bottom: 24px; line-height: 1.6; flex-grow: 1; }
+        .card p { color: var(--text-secondary); font-size: 16px; margin-bottom: 24px; line-height: 1.6; flex-grow: 1; } /* Increased font size */
         
         .tag-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: auto; }
-        .tech-tag { font-size: 11px; padding: 4px 10px; background: #f1f5f9; color: #64748b; border-radius: 6px; font-weight: 600; }
+        .tech-tag { font-size: 12px; padding: 6px 12px; background: #f1f5f9; color: #64748b; border-radius: 8px; font-weight: 600; } /* Larger tags */
 
         /* =========================================
            PROMO BANNER
@@ -636,7 +641,7 @@
         .promo-banner {
             background: linear-gradient(120deg, #0f172a 0%, #334155 100%);
             border-radius: 24px;
-            padding: 60px 40px;
+            padding: 60px 30px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -661,7 +666,7 @@
         .promo-tag {
             background: rgba(255,255,255,0.1); color: #fff; padding: 6px 16px; border-radius: 100px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.2); backdrop-filter: blur(4px);
         }
-        .promo-banner h3 { font-size: 28px; margin-bottom: 16px; font-weight: 700; }
+        .promo-banner h3 { font-size: 24px; margin-bottom: 16px; font-weight: 700; }
         .promo-banner p { color: #cbd5e1; margin-bottom: 32px; font-size: 16px; }
         .btn-promo {
             background: white; color: #0f172a; font-weight: 700;
@@ -708,7 +713,7 @@
         .tabs-container {
             background: white;
             border-radius: var(--radius-lg);
-            padding: 40px;
+            padding: 30px 20px; /* More padding */
             box-shadow: var(--shadow-md);
             margin-top: 40px;
         }
@@ -722,7 +727,7 @@
             border-bottom: 2px solid transparent;
             transition: all 0.3s;
             white-space: nowrap;
-            font-size: 15px;
+            font-size: 16px;
             position: relative;
         }
         .tab-btn.active { color: var(--primary); border-color: var(--primary); }
@@ -733,13 +738,13 @@
         .tech-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 24px; }
         .tech-item { 
             display: flex; flex-direction: column; align-items: center; gap: 12px; 
-            padding: 20px; border: 1px solid var(--border-light); border-radius: 12px; transition: 0.3s;
+            padding: 24px 16px; border: 1px solid var(--border-light); border-radius: 12px; transition: 0.3s;
             background: #fff;
         }
         .tech-item:hover { border-color: var(--primary); background: var(--primary-light); transform: translateY(-5px); box-shadow: var(--shadow-sm); }
         .tech-item i { font-size: 32px; color: var(--text-secondary); transition: 0.3s; }
         .tech-item:hover i { color: var(--primary); transform: scale(1.1); }
-        .tech-item span { font-size: 13px; font-weight: 600; text-align: center;}
+        .tech-item span { font-size: 14px; font-weight: 600; text-align: center;}
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
@@ -767,7 +772,7 @@
             font-size: 24px;
         }
         .why-content h4 { font-size: 18px; margin-bottom: 8px; font-weight: 700; }
-        .why-content p { font-size: 14px; color: var(--text-secondary); line-height: 1.6; }
+        .why-content p { font-size: 15px; color: var(--text-secondary); line-height: 1.6; }
 
         /* =========================================
            PROCESS
@@ -806,7 +811,7 @@
         .team-info { padding: 24px; flex-grow: 1; display: flex; flex-direction: column; align-items: center; }
         .team-role { color: var(--primary); font-size: 12px; font-weight: 700; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px;}
         .team-name { font-size: 18px; font-weight: 700; color: var(--text-main); margin-bottom: 8px; }
-        .team-desc { font-size: 13px; color: var(--text-secondary); margin-bottom: 16px; line-height: 1.5; }
+        .team-desc { font-size: 14px; color: var(--text-secondary); margin-bottom: 16px; line-height: 1.5; }
         .team-socials { display: flex; justify-content: center; gap: 16px; margin-top: auto; }
         .team-socials a { color: var(--text-muted); transition: 0.2s; font-size: 18px; }
         .team-socials a:hover { color: var(--primary); transform: translateY(-2px); }
@@ -828,7 +833,7 @@
         .contact-info-panel {
             background: #0f172a;
             color: white;
-            padding: 60px 40px;
+            padding: 50px 30px;
             position: relative;
             overflow: hidden;
         }
@@ -842,7 +847,7 @@
         .info-value { font-size: 16px; font-weight: 500; display: flex; align-items: center; gap: 12px; }
         .info-value i { color: var(--primary); font-size: 20px; }
 
-        .contact-form-panel { padding: 60px 40px; }
+        .contact-form-panel { padding: 40px 30px; }
 
         /* =========================================
            HOME PAGE SECTIONS
@@ -873,7 +878,7 @@
             margin-top: auto;
             color: var(--primary);
             font-weight: 700;
-            font-size: 14px;
+            font-size: 15px; /* Larger */
             cursor: pointer;
             display: inline-flex;
             align-items: center;
@@ -885,12 +890,12 @@
         /* Testimonials */
         .testimonials-section {
             background: linear-gradient(to bottom, #f8fafc, #fff);
-            padding: 100px 0;
+            padding: 80px 0;
             border-top: 1px solid var(--border-light);
         }
         .testimonial-card {
             background: white;
-            padding: 40px;
+            padding: 30px; /* Larger padding */
             border-radius: 24px;
             box-shadow: var(--shadow-md);
             border: 1px solid var(--border-light);
@@ -914,7 +919,7 @@
         }
         .testimonial-author {
             display: flex;
-            align-items: center,
+            align-items: center;
             gap: 16px;
         }
         .author-avatar {
@@ -931,7 +936,7 @@
            FAQ SECTION (STATIC)
            ========================================= */
         .faq-section {
-            padding: 100px 0;
+            padding: 80px 0;
             background: white;
         }
         .faq-container {
@@ -950,7 +955,7 @@
         .faq-question {
             padding: 24px;
             font-weight: 700;
-            font-size: 16px;
+            font-size: 17px; /* Larger */
             color: var(--text-main);
             background: #fff;
             cursor: default; 
@@ -1027,7 +1032,7 @@
         }
         .product-desc {
             color: var(--text-secondary);
-            font-size: 15px;
+            font-size: 16px; /* Larger */
             margin-bottom: 24px;
             line-height: 1.6;
             flex-grow: 1;
@@ -1044,13 +1049,13 @@
         .legal-content {
             background: white;
             border-radius: var(--radius-lg);
-            padding: 60px;
+            padding: 40px 24px; /* Responsive padding */
             box-shadow: var(--shadow-sm);
             border: 1px solid var(--border-light);
         }
-        .legal-content h1 { font-size: 32px; margin-bottom: 24px; font-weight: 800; }
+        .legal-content h1 { font-size: 28px; margin-bottom: 24px; font-weight: 800; }
         .legal-content h2 { font-size: 20px; margin-top: 32px; margin-bottom: 16px; font-weight: 700; color: var(--text-main); }
-        .legal-content p { margin-bottom: 16px; color: var(--text-secondary); font-size: 15px; }
+        .legal-content p { margin-bottom: 16px; color: var(--text-secondary); font-size: 16px; line-height: 1.7; } /* Larger */
         .legal-content ul { list-style: disc; padding-left: 20px; margin-bottom: 16px; color: var(--text-secondary); }
         .legal-content li { margin-bottom: 8px; }
 
@@ -1060,26 +1065,26 @@
         footer {
             background: #0f172a;
             color: #f1f5f9;
-            padding: 80px 0 40px;
-            margin-top: 100px;
+            padding: 60px 0 40px;
+            margin-top: 80px;
             border-top: 1px solid #1e293b;
         }
         .footer-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 48px;
+            gap: 40px;
             margin-bottom: 60px;
         }
-        .footer-brand p { color: #94a3b8; margin-top: 20px; font-size: 14px; line-height: 1.7; }
+        .footer-brand p { color: #94a3b8; margin-top: 20px; font-size: 15px; line-height: 1.7; }
         
         .footer-col h4 { color: white; font-size: 16px; font-weight: 700; margin-bottom: 24px; }
         .footer-col ul li { margin-bottom: 14px; }
-        .footer-col a { color: #94a3b8; font-size: 14px; transition: 0.2s; display: inline-block; cursor: pointer;}
+        .footer-col a { color: #94a3b8; font-size: 15px; transition: 0.2s; display: inline-block; cursor: pointer;}
         .footer-col a:hover { color: var(--primary); padding-left: 6px; }
 
         .footer-bottom {
             border-top: 1px solid rgba(255,255,255,0.1);
-            padding-top: 40px;
+            padding-top: 30px;
             display: flex;
             flex-wrap: wrap;
             justify-content: space-between;
@@ -1168,7 +1173,7 @@
             border-radius: 100px;
         }
         .modal-body h2 { font-size: 28px; font-weight: 800; margin-bottom: 20px; line-height: 1.2; }
-        .modal-body p { color: var(--text-secondary); font-size: 15px; margin-bottom: 20px; line-height: 1.7; }
+        .modal-body p { color: var(--text-secondary); font-size: 16px; margin-bottom: 20px; line-height: 1.7; } /* Larger */
         .modal-stats {
             display: flex; gap: 32px; margin: 32px 0; padding: 24px; background: #f8fafc; border-radius: 16px;
         }
@@ -1237,44 +1242,62 @@
         }
         .popup-message {
             color: var(--text-secondary);
-            font-size: 15px;
+            font-size: 16px;
             margin-bottom: 32px;
             line-height: 1.6;
         }
         .popup-btn {
             background: var(--primary);
             color: white;
-            padding: 12px 32px;
-            border-radius: 10px;
+            padding: 14px 32px; /* Larger touch target */
+            border-radius: 12px;
             font-weight: 600;
             transition: 0.3s;
             width: 100%;
+            font-size: 16px;
         }
         .popup-btn:hover {
             background: var(--primary-dark);
             transform: translateY(-2px);
         }
 
-        /* Responsive Adjustments */
+        /* =========================================
+           RESPONSIVE ADJUSTMENTS
+           ========================================= */
         @media(min-width: 768px) {
             .contact-wrapper { grid-template-columns: 1fr 1.5fr; }
-            .hero { padding: 160px 0 120px; }
+            .hero { padding: 140px 0 100px; }
+            .section-padding { padding: 100px 0; }
+            .btn { width: auto; justify-content: center; }
+            .legal-content { padding: 60px; }
+            .footer-brand p { font-size: 14px; }
         }
+        
         @media(max-width: 600px) {
+            :root {
+                --header-height: 60px;
+            }
             .section-padding { padding: 60px 0; }
             .section-title h2 { font-size: 24px; }
             .hero-content h1 { font-size: 36px; }
             .grid-2, .grid-3, .grid-4 { gap: 24px; }
             .team-img { height: 280px; }
-            .contact-form-panel { padding: 40px 24px; }
+            .contact-form-panel { padding: 30px 20px; }
             .contact-info-panel { padding: 40px 24px; }
             .legal-content { padding: 24px; }
-            .btn { width: 100%; justify-content: center; }
-            .faq-question { font-size: 14px; padding: 20px; }
+            .btn { width: 100%; justify-content: center; font-size: 16px; padding: 16px; }
+            .faq-question { font-size: 15px; padding: 20px; }
             .modal-content { margin: 20px; max-height: 95vh; }
             .modal-scroll-area { padding: 24px; }
             .modal-img { height: 200px; }
             .modal-stats { flex-direction: column; gap: 20px; }
+            
+            /* Ensure footer text is legible on small screens */
+            .footer-bottom {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
         }
     </style>
 </head>
@@ -1304,7 +1327,7 @@
             </nav>
 
             <div style="display: flex; align-items: center; gap: 20px;">
-                <button class="btn btn-primary" onclick="handleNavigation('contact', event)" aria-label="Get Started">
+                <button class="btn btn-primary" onclick="handleNavigation('contact', event)" aria-label="Get Started" style="padding: 10px 20px; font-size: 14px;">
                     Get Started <i class="ri-arrow-right-line"></i>
                 </button>
                 <div class="mobile-toggle" onclick="toggleMenu()" aria-label="Toggle Menu" role="button" tabindex="0">
@@ -1363,7 +1386,7 @@
         <!-- PAGE: HOME -->
         <section id="home" class="page-section active">
             <div class="hero">
-                <!-- NEW: Background Grid -->
+                <!-- Background Grid -->
                 <div class="hero-bg-grid"></div>
                 <div class="hero-bg-glow"></div>
                 
@@ -1436,24 +1459,24 @@
             </div>
 
             <!-- Key Stats -->
-            <div style="background: white; padding: 80px 0; border-bottom: 1px solid var(--border-light);">
+            <div style="background: white; padding: 60px 0; border-bottom: 1px solid var(--border-light);">
                 <div class="container">
                     <div class="grid-4 text-center">
                         <div class="reveal">
-                            <div class="counter" data-target="2">0</div><span style="font-size: 36px; font-weight: 800; color: var(--primary);">+</span>
-                            <div style="color: var(--text-secondary); margin-top: 12px; font-size: 13px;">Years Experience</div>
+                            <div class="counter" data-target="2">0</div><span style="font-size: 32px; font-weight: 800; color: var(--primary);">+</span>
+                            <div style="color: var(--text-secondary); margin-top: 12px; font-size: 14px;">Years Experience</div>
                         </div>
                         <div class="reveal reveal-delay-1">
-                            <div class="counter" data-target="15">0</div><span style="font-size: 36px; font-weight: 800; color: var(--accent-teal);">+</span>
-                            <div style="color: var(--text-secondary); margin-top: 12px; font-size: 13px;">Projects Delivered</div>
+                            <div class="counter" data-target="15">0</div><span style="font-size: 32px; font-weight: 800; color: var(--accent-teal);">+</span>
+                            <div style="color: var(--text-secondary); margin-top: 12px; font-size: 14px;">Projects Delivered</div>
                         </div>
                         <div class="reveal reveal-delay-2">
-                            <div class="counter" data-target="5">0</div><span style="font-size: 36px; font-weight: 800; color: var(--text-main);">+</span>
-                            <div style="color: var(--text-secondary); margin-top: 12px; font-size: 13px;">Enterprise Clients</div>
+                            <div class="counter" data-target="5">0</div><span style="font-size: 32px; font-weight: 800; color: var(--text-main);">+</span>
+                            <div style="color: var(--text-secondary); margin-top: 12px; font-size: 14px;">Enterprise Clients</div>
                         </div>
                         <div class="reveal reveal-delay-3">
-                            <div class="counter" data-target="99">0</div><span style="font-size: 36px; font-weight: 800; color: var(--text-main);">%</span>
-                            <div style="color: var(--text-secondary); margin-top: 12px; font-size: 13px;">Client Satisfaction</div>
+                            <div class="counter" data-target="99">0</div><span style="font-size: 32px; font-weight: 800; color: var(--text-main);">%</span>
+                            <div style="color: var(--text-secondary); margin-top: 12px; font-size: 14px;">Client Satisfaction</div>
                         </div>
                     </div>
                 </div>
@@ -1556,7 +1579,7 @@
                             <div class="case-content">
                                 <span class="case-tag">Healthcare</span>
                                 <h3>Secure Patient Management System</h3>
-                                <p style="font-size: 14px; color: var(--text-secondary); margin-bottom: 16px; flex-grow: 1;">Developed a cloud-based EMR system with encryption for KLINIK PERGIGIAN AZAM, reducing admin time by 60% and ensuring PDPA compliance.</p>
+                                <p style="font-size: 15px; color: var(--text-secondary); margin-bottom: 16px; flex-grow: 1;">Developed a cloud-based EMR system with encryption for KLINIK PERGIGIAN AZAM, reducing admin time by 60% and ensuring PDPA compliance.</p>
                                 <div class="case-link" onclick="openModal('klinik')">
                                     Read Case Study <i class="ri-arrow-right-line"></i>
                                 </div>
@@ -1571,7 +1594,7 @@
                             <div class="case-content">
                                 <span class="case-tag">Events</span>
                                 <h3>Event Management Platform</h3>
-                                <p style="font-size: 14px; color: var(--text-secondary); margin-bottom: 16px; flex-grow: 1;">Built a scalable app for ticketing and analytics for PNE ARENA ENTERPRISE, handling 10,000+ users and improving revenue by 40%.</p>
+                                <p style="font-size: 15px; color: var(--text-secondary); margin-bottom: 16px; flex-grow: 1;">Built a scalable app for ticketing and analytics for PNE ARENA ENTERPRISE, handling 10,000+ users and improving revenue by 40%.</p>
                                 <div class="case-link" onclick="openModal('pne')">
                                     Read Case Study <i class="ri-arrow-right-line"></i>
                                 </div>
@@ -1586,7 +1609,7 @@
                             <div class="case-content">
                                 <span class="case-tag">HR</span>
                                 <h3>HR Optimization Tool</h3>
-                                <p style="font-size: 14px; color: var(--text-secondary); margin-bottom: 16px; flex-grow: 1;">Implemented RPA for resource allocation at TIARA ADVANCE RECOURSES, cutting operational costs by 35%.</p>
+                                <p style="font-size: 15px; color: var(--text-secondary); margin-bottom: 16px; flex-grow: 1;">Implemented RPA for resource allocation at TIARA ADVANCE RECOURSES, cutting operational costs by 35%.</p>
                                 <div class="case-link" onclick="openModal('tiara')">
                                     Read Case Study <i class="ri-arrow-right-line"></i>
                                 </div>
@@ -1601,7 +1624,7 @@
                             <div class="case-content">
                                 <span class="case-tag">Coffee Website</span>
                                 <h3>Loyalty Web & E-Store</h3>
-                                <p style="font-size: 14px; color: var(--text-secondary); margin-bottom: 16px; flex-grow: 1;">Integrated a digital loyalty system for MORY, boosting order frequency and volume by over 50%.</p>
+                                <p style="font-size: 15px; color: var(--text-secondary); margin-bottom: 16px; flex-grow: 1;">Integrated a digital loyalty system for MORY, boosting order frequency and volume by over 50%.</p>
                                 <div class="case-link" onclick="openModal('mory')">
                                     Read Case Study <i class="ri-arrow-right-line"></i>
                                 </div>
@@ -1759,7 +1782,7 @@
                             <div class="card-icon"><i class="ri-database-2-line"></i></div>
                             <h3>Data Analytics & BI</h3>
                             <p>Transform raw data into actionable intelligence. We build data lakes, warehouses, and visualization dashboards that empower decision-makers.</p>
-                            <ul style="margin-top: 15px; color: var(--text-secondary); font-size: 14px; list-style: disc; padding-left: 20px;">
+                            <ul style="margin-top: 15px; color: var(--text-secondary); font-size: 15px; list-style: disc; padding-left: 20px;">
                                 <li>Predictive Analytics using ML</li>
                                 <li>PowerBI & Tableau Integration</li>
                                 <li>Real-time Data Processing</li>
@@ -1769,7 +1792,7 @@
                             <div class="card-icon"><i class="ri-smartphone-line"></i></div>
                             <h3>Mobile Enterprise Apps</h3>
                             <p>Secure, cross-platform mobile solutions for field workforce, sales teams, and customer engagement.</p>
-                            <ul style="margin-top: 15px; color: var(--text-secondary); font-size: 14px; list-style: disc; padding-left: 20px;">
+                            <ul style="margin-top: 15px; color: var(--text-secondary); font-size: 15px; list-style: disc; padding-left: 20px;">
                                 <li>Flutter & React Native</li>
                                 <li>Offline-First Architecture</li>
                                 <li>MDM Integration</li>
@@ -1779,7 +1802,7 @@
                             <div class="card-icon"><i class="ri-robot-2-line"></i></div>
                             <h3>RPA & Intelligent Automation</h3>
                             <p>Streamline repetitive tasks and reduce operational costs with Robotic Process Automation (RPA) bots.</p>
-                            <ul style="margin-top: 15px; color: var(--text-secondary); font-size: 14px; list-style: disc; padding-left: 20px;">
+                            <ul style="margin-top: 15px; color: var(--text-secondary); font-size: 15px; list-style: disc; padding-left: 20px;">
                                 <li>UiPath & Automation Anywhere</li>
                                 <li>Process Optimization</li>
                                 <li>Invoice & Data Entry Bots</li>
@@ -1789,7 +1812,7 @@
                             <div class="card-icon"><i class="ri-cloud-line"></i></div>
                             <h3>Legacy Modernization</h3>
                             <p>Revamp outdated systems without disrupting business continuity. We replatform monolithic apps to modern cloud-native stacks.</p>
-                            <ul style="margin-top: 15px; color: var(--text-secondary); font-size: 14px; list-style: disc; padding-left: 20px;">
+                            <ul style="margin-top: 15px; color: var(--text-secondary); font-size: 15px; list-style: disc; padding-left: 20px;">
                                 <li>Mainframe Migration</li>
                                 <li>API-First Architecture</li>
                                 <li>Containerization</li>
@@ -2022,7 +2045,7 @@ DDNEX operates under DD CLOUD NETWORK (SSM Registered) and is part of the DDNetw
                     <div class="contact-wrapper reveal">
                         <!-- Info Panel -->
                         <div class="contact-info-panel">
-                            <h2 style="margin-bottom: 32px; font-size: 28px; font-weight: 800;">Let's Discuss Your Project</h2>
+                            <h2 style="margin-bottom: 32px; font-size: 24px; font-weight: 800;">Let's Discuss Your Project</h2>
                             
                             <div class="info-card">
                                 <div class="info-label">Headquarters</div>
@@ -2068,21 +2091,21 @@ DDNEX operates under DD CLOUD NETWORK (SSM Registered) and is part of the DDNetw
                             <form onsubmit="handleContact(event)">
                                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
                                     <div>
-                                        <label for="firstName" style="font-size: 13px; font-weight: 600; margin-bottom: 8px; display: block;">First Name</label>
-                                        <input type="text" id="firstName" class="form-input" style="width: 100%; padding: 14px; border: 1px solid var(--border-light); border-radius: 8px; font-size: 15px; transition: 0.3s;" placeholder="John" required>
+                                        <label for="firstName" style="font-size: 14px; font-weight: 600; margin-bottom: 8px; display: block;">First Name</label>
+                                        <input type="text" id="firstName" class="form-input" style="width: 100%; padding: 14px; border: 1px solid var(--border-light); border-radius: 8px; font-size: 16px; transition: 0.3s;" placeholder="John" required>
                                     </div>
                                     <div>
-                                        <label for="lastName" style="font-size: 13px; font-weight: 600; margin-bottom: 8px; display: block;">Last Name</label>
-                                        <input type="text" id="lastName" class="form-input" style="width: 100%; padding: 14px; border: 1px solid var(--border-light); border-radius: 8px; font-size: 15px; transition: 0.3s;" placeholder="Doe" required>
+                                        <label for="lastName" style="font-size: 14px; font-weight: 600; margin-bottom: 8px; display: block;">Last Name</label>
+                                        <input type="text" id="lastName" class="form-input" style="width: 100%; padding: 14px; border: 1px solid var(--border-light); border-radius: 8px; font-size: 16px; transition: 0.3s;" placeholder="Doe" required>
                                     </div>
                                 </div>
                                 <div style="margin-bottom: 20px;">
-                                    <label for="email" style="font-size: 13px; font-weight: 600; margin-bottom: 8px; display: block;">Business Email</label>
-                                    <input type="email" id="email" class="form-input" style="width: 100%; padding: 14px; border: 1px solid var(--border-light); border-radius: 8px; font-size: 15px; transition: 0.3s;" placeholder="john@company.com" required>
+                                    <label for="email" style="font-size: 14px; font-weight: 600; margin-bottom: 8px; display: block;">Business Email</label>
+                                    <input type="email" id="email" class="form-input" style="width: 100%; padding: 14px; border: 1px solid var(--border-light); border-radius: 8px; font-size: 16px; transition: 0.3s;" placeholder="john@company.com" required>
                                 </div>
                                 <div style="margin-bottom: 20px;">
-                                    <label for="service" style="font-size: 13px; font-weight: 600; margin-bottom: 8px; display: block;">Service Interest</label>
-                                    <select id="service" class="form-input" style="width: 100%; padding: 14px; border: 1px solid var(--border-light); border-radius: 8px; background: white; font-size: 15px;">
+                                    <label for="service" style="font-size: 14px; font-weight: 600; margin-bottom: 8px; display: block;">Service Interest</label>
+                                    <select id="service" class="form-input" style="width: 100%; padding: 14px; border: 1px solid var(--border-light); border-radius: 8px; background: white; font-size: 16px;">
                                         <option>Custom Software Development</option>
                                         <option>Cloud Migration</option>
                                         <option>Cybersecurity</option>
@@ -2091,8 +2114,8 @@ DDNEX operates under DD CLOUD NETWORK (SSM Registered) and is part of the DDNetw
                                     </select>
                                 </div>
                                 <div style="margin-bottom: 28px;">
-                                    <label for="message" style="font-size: 13px; font-weight: 600; margin-bottom: 8px; display: block;">Project Details</label>
-                                    <textarea id="message" class="form-input" style="width: 100%; padding: 14px; border: 1px solid var(--border-light); border-radius: 8px; min-height: 120px; font-size: 15px; transition: 0.3s;" placeholder="Tell us about your project goals..." required></textarea>
+                                    <label for="message" style="font-size: 14px; font-weight: 600; margin-bottom: 8px; display: block;">Project Details</label>
+                                    <textarea id="message" class="form-input" style="width: 100%; padding: 14px; border: 1px solid var(--border-light); border-radius: 8px; min-height: 120px; font-size: 16px; transition: 0.3s;" placeholder="Tell us about your project goals..." required></textarea>
                                 </div>
                                 <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center;">Submit Request</button>
                                 <p style="font-size: 12px; color: var(--text-muted); margin-top: 16px; text-align: center;">By submitting, you agree to our Privacy Policy.</p>
@@ -2462,8 +2485,11 @@ DDNEX operates under DD CLOUD NETWORK (SSM Registered) and is part of the DDNetw
                 btn.disabled = false;
                 btn.style.opacity = '1';
                 e.target.reset();
-                // Call the new custom popup instead of toast
+                
+                // Show popup
                 showPopup("Success", "Your inquiry has been received. Our team will contact you shortly.");
+                
+                // REMOVED NAVIGATION: User stays on contact page as requested.
             }, 2000);
         }
 
@@ -2562,13 +2588,10 @@ DDNEX operates under DD CLOUD NETWORK (SSM Registered) and is part of the DDNetw
             document.body.style.overflow = 'auto';
         }
 
-        // --- SCROLL LOGIC (Parallax Removed as requested) ---
+        // --- SCROLL LOGIC ---
         window.addEventListener('scroll', () => {
             const scrollY = window.scrollY;
             
-            // REMOVED: Parallax logic for heroVisual and parallax-layer
-            // The site now scrolls naturally without transform offsets causing overlap bugs.
-
             // Scroll Progress & Header State
             const header = document.getElementById('header');
             const progress = document.getElementById('scroll-progress');

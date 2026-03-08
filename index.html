@@ -32,7 +32,7 @@
     <!-- Icons -->
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
 
-    <!-- Brevo Form CSS -->
+    <!-- Brevo Form CSS (Preserved) -->
     <style>
       @font-face {
         font-display: block;
@@ -87,6 +87,7 @@
             
             --accent-teal: #06b6d4;
             --accent-purple: #7c3aed;
+            --accent-orange: #f97316;
             --accent-slate: #0f172a;
             
             /* Neutrals - Softer contrast */
@@ -333,7 +334,6 @@
             position: relative;
             overflow: hidden;
             white-space: nowrap;
-            /* Touch target improvement */
             min-height: 48px;
             min-width: 48px;
         }
@@ -378,7 +378,7 @@
             gap: 6px; 
             cursor: pointer; 
             z-index: 1002; 
-            width: 44px; /* Larger touch target */
+            width: 44px;
             height: 44px; 
             justify-content: center;
             border-radius: 8px;
@@ -425,7 +425,7 @@
         }
         .menu-logo { height: 32px; }
         .menu-close-btn {
-            width: 44px; height: 44px; /* Larger touch target */
+            width: 44px; height: 44px;
             border-radius: 50%;
             background: #f1f5f9;
             display: flex; align-items: center; justify-content: center;
@@ -459,7 +459,6 @@
             transition: all 0.2s;
             opacity: 0;
             transform: translateX(20px);
-            /* Improved Touch Target */
             min-height: 60px; 
         }
         
@@ -547,7 +546,7 @@
            ========================================= */
         .hero {
             position: relative;
-            padding: 80px 0 60px; /* Mobile adjustments */
+            padding: 80px 0 60px;
             overflow: hidden;
             background: radial-gradient(circle at top right, #f0f9ff 0%, transparent 60%);
         }
@@ -598,18 +597,18 @@
         }
 
         .hero-content p {
-            font-size: 16px; /* Mobile optimized */
+            font-size: 16px; 
             color: var(--text-secondary);
             margin-bottom: 32px;
             line-height: 1.7;
             max-width: 540px;
         }
-        .hero-content .btn { width: 100%; margin-bottom: 12px; } /* Mobile full width buttons */
+        .hero-content .btn { width: 100%; margin-bottom: 12px; } 
 
         .hero-visual {
             position: relative;
             width: 100%;
-            height: 300px; /* Mobile height */
+            height: 300px; 
             background: white;
             border-radius: 24px;
             box-shadow: var(--shadow-xl);
@@ -660,7 +659,7 @@
         .hero-stats {
             margin-top: 40px; 
             display: grid; 
-            grid-template-columns: 1fr 1fr; /* Mobile Grid */
+            grid-template-columns: 1fr 1fr; 
             gap: 24px; 
         }
         .stat-item {
@@ -687,10 +686,7 @@
             .hero { padding: 180px 0 140px; }
             .hero-content p { font-size: 18px; }
             .hero-content .btn { width: auto; margin-bottom: 0; }
-            .hero-stats { 
-                display: flex; 
-                gap: 32px; 
-            }
+            .hero-stats { display: flex; gap: 32px; }
         }
 
         /* =========================================
@@ -760,7 +756,7 @@
         .promo-banner {
             background: linear-gradient(120deg, #1e293b 0%, #0f172a 100%);
             border-radius: 24px;
-            padding: 40px 24px; /* Mobile padding */
+            padding: 40px 24px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -817,7 +813,7 @@
         .trust-track::after { right: 0; background: linear-gradient(to left, white, transparent); }
         
         .logos-wrapper {
-            display: flex; gap: 60px; align-items: center; /* Mobile spacing */
+            display: flex; gap: 60px; align-items: center; 
             animation: slideLogos 40s linear infinite;
             padding: 20px 0;
         }
@@ -832,12 +828,12 @@
         @keyframes slideLogos { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 
         /* =========================================
-           SERVICES TABS (NEW)
+           SERVICES TABS
            ========================================= */
         .tabs-container {
             background: white;
             border-radius: var(--radius-lg);
-            padding: 24px; /* Mobile padding */
+            padding: 24px;
             box-shadow: var(--shadow-lg);
             margin-top: 40px;
             border: 1px solid var(--border-light);
@@ -872,7 +868,7 @@
             border-radius: 20px;
             overflow: hidden;
             box-shadow: var(--shadow-lg);
-            height: 250px; /* Mobile height */
+            height: 250px; 
         }
         .service-image img {
             width: 100%; height: 100%; object-fit: cover;
@@ -973,10 +969,10 @@
         .team-socials a:hover { color: var(--primary); transform: translateY(-2px); }
 
         /* =========================================
-           PRICING / PACKAGES SECTION (UPGRADED)
+           PRICING / PACKAGES SECTION
            ========================================= */
         .pricing-section {
-            padding: 80px 0; /* Mobile padding */
+            padding: 80px 0;
             background: linear-gradient(to bottom, #f8fafc, #fff);
         }
         
@@ -984,7 +980,7 @@
             background: white;
             border-radius: 24px;
             border: 1px solid var(--border-light);
-            padding: 32px 24px; /* Mobile padding */
+            padding: 32px 24px; 
             position: relative;
             transition: 0.4s var(--ease);
             display: flex;
@@ -1142,7 +1138,7 @@
         .contact-info-panel {
             background: #0f172a;
             color: white;
-            padding: 40px 24px; /* Mobile padding */
+            padding: 40px 24px; 
             position: relative;
             overflow: hidden;
             order: 2;
@@ -1174,9 +1170,9 @@
             font-size: 13px; font-weight: 600; margin-bottom: 8px; display: block; color: var(--text-main);
         }
         .form-group input, .form-group select, .form-group textarea {
-            padding: 14px; /* Mobile touch friendly */
+            padding: 14px; 
             border-radius: 12px;
-            font-size: 16px; /* Prevent zoom on iOS */
+            font-size: 16px; 
         }
 
         /* =========================================
@@ -1196,7 +1192,7 @@
             height: 100%;
         }
         .case-study-card:hover { transform: translateY(-8px); box-shadow: var(--shadow-xl); }
-        .case-img { height: 200px; overflow: hidden; background: #e2e8f0; position: relative; } /* Mobile height */
+        .case-img { height: 200px; overflow: hidden; background: #e2e8f0; position: relative; } 
         .case-img img { width: 100%; height: 100%; object-fit: cover; transition: 0.6s; }
         .case-study-card:hover .case-img img { transform: scale(1.05); }
         .case-content { padding: 24px; flex-grow: 1; display: flex; flex-direction: column; }
@@ -1220,12 +1216,12 @@
         /* Testimonials */
         .testimonials-section {
             background: linear-gradient(to bottom, #f8fafc, #fff);
-            padding: 80px 0; /* Mobile */
+            padding: 80px 0; 
             border-top: 1px solid var(--border-light);
         }
         .testimonial-card {
             background: white;
-            padding: 32px; /* Mobile */
+            padding: 32px; 
             border-radius: 24px;
             box-shadow: var(--shadow-lg);
             border: 1px solid var(--border-light);
@@ -1278,7 +1274,7 @@
         .faq-question {
             padding: 20px;
             font-weight: 700;
-            font-size: 15px; /* Mobile */
+            font-size: 15px; 
             color: var(--text-main);
             background: #fff;
             cursor: default; pointer-events: none; margin-bottom: 12px; 
@@ -1345,7 +1341,7 @@
             display: block;
         }
         .product-title {
-            font-size: 26px; /* Mobile adjust */
+            font-size: 26px; 
             font-weight: 800;
             color: var(--text-main);
             margin-bottom: 16px;
@@ -1365,7 +1361,7 @@
            NEWSLETTER SECTION (Brevo Integration)
            ========================================= */
         .newsletter-section {
-            padding: 60px 0; /* Mobile */
+            padding: 60px 0; 
             background: var(--bg-surface);
             border-top: 1px solid var(--border-light);
             border-bottom: 1px solid var(--border-light);
@@ -1400,7 +1396,7 @@
         }
         .sib-container--large {
             background: var(--bg-body) !important;
-            padding: 24px !important; /* Mobile */
+            padding: 24px !important; 
             border: 1px solid var(--border-light) !important;
             border-radius: 24px !important;
             box-shadow: var(--shadow-md);
@@ -1422,7 +1418,7 @@
         }
         .entry__field input {
             width: 100% !important;
-            padding: 14px !important; /* Mobile */
+            padding: 14px !important; 
             border: 1px solid var(--border-light) !important;
             border-radius: 12px !important;
             background: white !important;
@@ -1438,7 +1434,7 @@
         }
         .sib-form-block__button {
             width: 100% !important;
-            padding: 14px 24px !important; /* Mobile */
+            padding: 14px 24px !important; 
             background: var(--primary) !important;
             color: white !important;
             border-radius: 12px !important;
@@ -1475,7 +1471,7 @@
         .legal-content {
             background: white;
             border-radius: var(--radius-lg);
-            padding: 32px; /* Mobile */
+            padding: 32px; 
             box-shadow: var(--shadow-sm);
             border: 1px solid var(--border-light);
         }
@@ -1491,7 +1487,7 @@
         footer {
             background: #0f172a;
             color: #f1f5f9;
-            padding: 60px 0 24px; /* Mobile */
+            padding: 60px 0 24px; 
             margin-top: 0; 
             border-top: 1px solid #1e293b;
             position: relative;
@@ -1549,7 +1545,7 @@
         .modal-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(15, 23, 42, 0.7); /* Darker backdrop */
+            background: rgba(15, 23, 42, 0.7); 
             backdrop-filter: blur(8px);
             z-index: 3000;
             display: flex;
@@ -1905,7 +1901,7 @@
             </div>
 
             <!-- =========================================
-                 SERVICE PACKAGES SECTION (UPGRADED)
+                 SERVICE PACKAGES SECTION
                  ========================================= -->
             <div class="pricing-section">
                 <div class="container">
@@ -2097,43 +2093,72 @@
                 </div>
             </div>
 
-            <!-- Core Services Preview -->
+            <!-- Core Services Preview (UPDATED CONTENT) -->
             <div class="section-padding" style="background: white;">
                 <div class="container">
                     <div class="section-title text-center reveal">
                         <span class="badge">Our Expertise</span>
                         <h2>Comprehensive Digital Solutions</h2>
-                        <p>From legacy modernization to AI integration, we cover the full spectrum of enterprise needs.</p>
+                        <p>From modern web development to advanced backend systems and secure cloud deployment.</p>
                     </div>
                     <div class="grid-3">
+                        <!-- Service 1 -->
                         <div class="card reveal">
                             <div class="card-icon"><i class="ri-code-s-slash-line"></i></div>
-                            <h3>Custom Software Dev</h3>
-                            <p>Bespoke enterprise applications built with scalable microservices architecture.</p>
+                            <h3>Web Development</h3>
+                            <p>Modern, responsive websites designed for businesses, startups, and organizations.</p>
                             <div class="tag-row">
-                                <span class="tech-tag">Java</span>
-                                <span class="tech-tag">Python</span>
-                                <span class="tech-tag">.NET</span>
+                                <span class="tech-tag">HTML5</span>
+                                <span class="tech-tag">CSS3</span>
+                                <span class="tech-tag">JavaScript</span>
                             </div>
                         </div>
+                        
+                        <!-- Service 2 -->
                         <div class="card reveal reveal-delay-1">
-                            <div class="card-icon"><i class="ri-cloud-windy-line"></i></div>
-                            <h3>Cloud & DevOps</h3>
-                            <p>Seamless migration and infrastructure automation on AWS, Azure, and Google Cloud.</p>
+                            <div class="card-icon"><i class="ri-database-2-line"></i></div>
+                            <h3>Frontend + Backend System</h3>
+                            <p>Complete web applications with secure backend powered by Google Firebase for real-time data and scalable performance.</p>
                             <div class="tag-row">
-                                <span class="tech-tag">Kubernetes</span>
-                                <span class="tech-tag">Terraform</span>
-                                <span class="tech-tag">Docker</span>
+                                <span class="tech-tag">Firebase Auth</span>
+                                <span class="tech-tag">Firestore</span>
+                                <span class="tech-tag">Realtime DB</span>
                             </div>
                         </div>
+
+                        <!-- Service 3 -->
                         <div class="card reveal reveal-delay-2">
-                            <div class="card-icon"><i class="ri-shield-check-line"></i></div>
-                            <h3>Cybersecurity</h3>
-                            <p>Proactive threat hunting, compliance, and data protection strategies.</p>
+                            <div class="card-icon"><i class="ri-cloud-windy-line"></i></div>
+                            <h3>Cloud Hosting & Deployment</h3>
+                            <p>Fast and reliable hosting with global delivery and secure infrastructure.</p>
                             <div class="tag-row">
-                                <span class="tech-tag">SOC</span>
-                                <span class="tech-tag">PenTest</span>
-                                <span class="tech-tag">GDPR</span>
+                                <span class="tech-tag">Firebase Hosting</span>
+                                <span class="tech-tag">Cloud CDN</span>
+                                <span class="tech-tag">Domain Int.</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Service 4 -->
+                        <div class="card reveal">
+                            <div class="card-icon"><i class="ri-settings-3-line"></i></div>
+                            <h3>Business Tools & Automation</h3>
+                            <p>Custom digital tools to help businesses manage operations and customer data efficiently.</p>
+                            <div class="tag-row">
+                                <span class="tech-tag">Admin Dash</span>
+                                <span class="tech-tag">Cust. DB</span>
+                                <span class="tech-tag">Email Int.</span>
+                            </div>
+                        </div>
+
+                        <!-- Service 5 -->
+                        <div class="card reveal reveal-delay-1">
+                            <div class="card-icon"><i class="ri-shield-keyhole-line"></i></div>
+                            <h3>Security & Data Protection</h3>
+                            <p>Secure backend architecture with built-in protection and encrypted data storage.</p>
+                            <div class="tag-row">
+                                <span class="tech-tag">Security Rules</span>
+                                <span class="tech-tag">SSL</span>
+                                <span class="tech-tag">Auto Backup</span>
                             </div>
                         </div>
                     </div>
@@ -2328,7 +2353,7 @@
 
         </section>
 
-        <!-- PAGE: SERVICES (UPDATED & HIGH-END) -->
+        <!-- PAGE: SERVICES -->
         <section id="services" class="page-section">
             <div class="section-padding">
                 <div class="container">

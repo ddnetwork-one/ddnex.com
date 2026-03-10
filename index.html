@@ -530,6 +530,17 @@
             padding-top: 24px;
             text-align: center;
         }
+        
+        /* =========================================
+           HEADER MOBILE OVERRIDES
+           ========================================= */
+        
+        /* Hide the primary "Get Started" button on mobile screens */
+        @media(max-width: 991px) {
+            header .btn-primary {
+                display: none !important;
+            }
+        }
 
         /* Desktop View Reset */
         @media(min-width: 992px) {

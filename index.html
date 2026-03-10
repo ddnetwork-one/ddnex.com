@@ -1400,10 +1400,12 @@
             .pricing-section { padding: 100px 0; }
         }
 
-        /* Add-ons Section */
+        /* =========================================
+           ADD-ONS SECTION - MOBILE REDESIGN
+           ========================================= */
         .addons-section {
             margin-top: 60px;
-            padding: 40px;
+            padding: 32px 20px; /* Increased padding for breathing room */
             background: white;
             border-radius: 24px;
             border: 1px solid var(--border-light);
@@ -1423,8 +1425,11 @@
             color: var(--text-secondary);
             text-align: center;
             margin-bottom: 32px;
+            padding: 0 10px; /* Prevent text hitting edges on very small screens */
+            line-height: 1.5;
         }
         
+        /* Desktop Grid Layout (Default) */
         .addons-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -1440,6 +1445,7 @@
             border-radius: 12px;
             border: 1px solid var(--border-light);
             transition: all 0.3s var(--ease);
+            cursor: pointer; /* Indicates interactability */
         }
         
         .addon-item:hover {
@@ -1457,10 +1463,57 @@
             font-size: 14px;
             font-weight: 700;
             color: var(--primary);
+            background: rgba(37, 99, 235, 0.1); /* Light background pill for price */
+            padding: 4px 10px;
+            border-radius: 20px;
         }
 
-        @media(min-width: 768px) {
-            .addons-grid { grid-template-columns: repeat(3, 1fr); }
+        /* --- MOBILE SPECIFIC REDESIGN --- */
+        @media(max-width: 767px) {
+            .addons-grid {
+                display: flex;
+                flex-direction: column;
+                gap: 12px; /* Vertical stacking */
+            }
+
+            .addon-item {
+                display: flex;
+                flex-direction: row; /* Keep text on left, price on right */
+                justify-content: space-between;
+                align-items: center;
+                width: 100%;
+                padding: 16px;
+                background: #ffffff;
+                border: 1px solid var(--border-light);
+                border-radius: 16px; /* More rounded for modern feel */
+                box-shadow: 0 2px 8px rgba(0,0,0,0.03); /* Subtle shadow for depth */
+                transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+            }
+
+            /* Active/Pressed State for Touch Feedback */
+            .addon-item:active {
+                transform: scale(0.98);
+                background: #f1f5f9;
+            }
+
+            .addon-name {
+                font-size: 15px; /* Slightly larger for readability */
+                color: var(--text-main);
+                font-weight: 600;
+                flex: 1; /* Takes up available space */
+                padding-right: 12px; /* Space between name and price */
+            }
+
+            .addon-price {
+                font-size: 14px;
+                font-weight: 800;
+                color: var(--primary);
+                white-space: nowrap; /* Prevent price wrapping */
+                padding: 6px 12px; /* Bigger pill for easier tapping */
+                background: #eff6ff; /* Clearer blue background */
+                border: 1px solid rgba(37, 99, 235, 0.1);
+                border-radius: 8px; /* Softer pill shape */
+            }
         }
 
         /* =========================================

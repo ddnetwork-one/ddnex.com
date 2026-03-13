@@ -3057,7 +3057,6 @@
 <base target="_blank">
 <base target="_blank">
 <base target="_blank">
-<base target="_blank">
 </head>
 <body>
 
@@ -5830,14 +5829,28 @@
         };
 
         window.firebaseDB = {
-            // ORDERS (orders_ddnex) - Invoice/Order Management matching Portal structure
+            saveOrder: async (orderData) => {
+                try {
+                    const collectionName = "orders_ddnex";
+                    await addDoc(collection(db, collectionName), {
+                        ...orderData,
+                        createdAt: new Date(),
+                        userId: auth.currentUser ? auth.currentUser.uid : 'guest'
+                    });
+                    console.log(`Document saved to ${collectionName}`);
+                    return true;
+                } catch (error) {
+                    console.error("Error saving order:", error);
+                    return false;
+                }
+            },
             getOrders: async () => {
                 if (!auth.currentUser) return [];
                 try {
                     const q = query(
                         collection(db, "orders_ddnex"),
                         where("userId", "==", auth.currentUser.uid),
-                        orderBy("date", "desc")
+                        orderBy("createdAt", "desc")
                     );
                     const querySnapshot = await getDocs(q);
                     const orders = [];
@@ -5848,63 +5861,6 @@
                 } catch (error) {
                     console.error("Error fetching orders:", error);
                     return [];
-                }
-            },
-            getOrder: async (id) => {
-                const ref = doc(db, 'orders_ddnex', id);
-                const snap = await getDoc(ref);
-                return snap.exists() ? {id: snap.id, ...snap.data()} : null;
-            },
-            addOrder: async (data) => {
-                try {
-                    // Generate order number if not provided (IDNX-XXXX format)
-                    const orderNumber = data.number || await window.generateOrderNumber();
-
-                    // Structure matching Portal's orders_ddnex schema
-                    const orderData = {
-                        number: orderNumber,
-                        clientName: data.customerName || data.clientName || '',
-                        clientEmail: data.customerEmail || data.clientEmail || auth.currentUser?.email || '',
-                        clientPhone: data.customerPhone || data.clientPhone || '',
-                        clientCompany: data.customerCompany || data.clientCompany || '',
-                        date: data.date || new Date().toISOString().split('T')[0],
-                        status: data.status || 'Unpaid',
-                        description: data.planName || data.description || 'Website Package',
-                        subtotal: parseFloat(data.price || data.subtotal || 0),
-                        discount: parseFloat(data.discount || 0),
-                        total: parseFloat(data.finalPrice || data.total || data.price || 0),
-                        domain: data.domain || '',
-                        paymentMethod: data.paymentMethod || 'One-Time Payment',
-                        styleDescription: data.styleDescription || '',
-                        type: 'Invoice',
-                        userId: auth.currentUser ? auth.currentUser.uid : 'guest',
-                        createdAt: new Date()
-                    };
-
-                    await addDoc(collection(db, "orders_ddnex"), orderData);
-                    console.log(`Order saved to orders_ddnex with number: ${orderNumber}`);
-                    return { success: true, orderNumber: orderNumber };
-                } catch (error) {
-                    console.error("Error saving order:", error);
-                    return { success: false, error: error.message };
-                }
-            },
-            updateOrder: async (id, data) => {
-                try {
-                    await updateDoc(doc(db, 'orders_ddnex', id), data);
-                    return true;
-                } catch (error) {
-                    console.error("Error updating order:", error);
-                    return false;
-                }
-            },
-            deleteOrder: async (id) => {
-                try {
-                    await deleteDoc(doc(db, 'orders_ddnex', id));
-                    return true;
-                } catch (error) {
-                    console.error("Error deleting order:", error);
-                    return false;
                 }
             }
         };
@@ -6529,26 +6485,21 @@
             btn.innerHTML = '<i class="ri-loader-4-line ri-spin"></i> Processing...';
             btn.disabled = true;
 
-            // Prepare order data matching Portal's orders_ddnex schema
-            const orderData = {
+            const finalOrder = {
+                ...tempOrderData,
                 customerName: document.getElementById('coFullName').value,
                 customerEmail: document.getElementById('coEmail').value,
                 customerPhone: document.getElementById('coPhone').value,
                 customerCompany: document.getElementById('coCompany').value,
-                planName: tempOrderData.planName,
-                price: tempOrderData.price,
-                finalPrice: tempOrderData.finalPrice || tempOrderData.price,
-                paymentMethod: tempOrderData.paymentMethod || 'One-Time Payment',
-                domain: tempOrderData.domain,
                 styleDescription: document.getElementById('coStyleDesc').value,
-                status: 'Unpaid',  // Portal uses 'Unpaid' for invoices
-                discount: 0
+                status: 'Pending Payment',
+                renewalDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toLocaleDateString()
             };
 
-            if (window.firebaseDB && window.firebaseDB.addOrder) {
-                const result = await window.firebaseDB.addOrder(orderData);
-                if (result.success) {
-                    showPopup("Order Placed!", `Your order ${result.orderNumber} has been received. We will contact you shortly.`);
+            if (window.firebaseDB) {
+                const success = await window.firebaseDB.saveOrder(finalOrder);
+                if (success) {
+                    showPopup("Order Placed!", "Your order has been received. We will contact you shortly.");
                     handleNavigation('profile', null);
                     document.getElementById('checkoutForm').reset();
                     document.getElementById('agreeTerms').checked = false;
@@ -6851,11 +6802,11 @@
 
             const ordersList = document.getElementById('ordersList');
             const loading = document.getElementById('ordersLoading');
-
-            if(window.firebaseDB && window.firebaseDB.getOrders) {
+            
+            if(window.firebaseDB) {
                 loading.style.display = 'block';
                 ordersList.innerHTML = '';
-
+                
                 const orders = await window.firebaseDB.getOrders();
                 loading.style.display = 'none';
 
@@ -6866,37 +6817,30 @@
                     document.getElementById('dbDomainName').textContent = "-";
                 } else {
                     const latestOrder = orders[0]; 
-
-                    // Use Portal-style field names (description for plan name, total for price)
-                    document.getElementById('dbPlanName').textContent = latestOrder.description || latestOrder.planName || 'Custom Plan';
-                    document.getElementById('dbPlanPrice').textContent = 'RM' + (latestOrder.total || latestOrder.price || '0');
+                    
+                    document.getElementById('dbPlanName').textContent = latestOrder.planName || 'Custom Plan';
+                    document.getElementById('dbPlanPrice').textContent = 'RM' + (latestOrder.price || '0');
                     document.getElementById('dbDomainName').textContent = latestOrder.domain || 'Custom Domain';
-
+                    
                     orders.forEach(order => {
-                        // Support both old and new field names for compatibility
-                        const date = order.date || (order.createdAt ? new Date(order.createdAt.seconds * 1000).toLocaleDateString() : 'Pending');
-                        const status = order.status || 'Unpaid';
-                        const orderNumber = order.number || 'N/A';
-                        const description = order.description || order.planName || 'Website Order';
-                        const total = order.total || order.price || 0;
-
+                        const date = order.createdAt ? new Date(order.createdAt.seconds * 1000).toLocaleDateString() : 'Pending';
+                        const status = order.status || 'Pending';
+                        
                         const orderEl = document.createElement('div');
-                        orderEl.style.cssText = "background: white; padding: 20px; border-radius: 12px; border: 1px solid var(--border-light); display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;";
+                        orderEl.style.cssText = "background: white; padding: 20px; border-radius: 12px; border: 1px solid var(--border-light); display: flex; justify-content: space-between; align-items: center;";
                         orderEl.innerHTML = `
                             <div>
-                                <div style="font-weight: 700; font-size: 15px;">${description}</div>
-                                <div style="font-size: 12px; color: var(--primary); margin-top: 4px;">Order: ${orderNumber}</div>
-                                <div style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">${date} • RM${parseFloat(total).toLocaleString()}</div>
+                                <div style="font-weight: 700; font-size: 15px;">${order.planName || 'Custom Order'}</div>
+                                <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Ordered on: ${date}</div>
                             </div>
-                            <div class="status-badge ${status === 'Paid' || status === 'Completed' ? 'status-active' : 'status-pending'}">
-                                <i class="ri-${status === 'Paid' || status === 'Completed' ? 'checkbox' : 'time'}-line"></i> ${status}
+                            <div class="status-badge ${status === 'Completed' ? 'status-active' : 'status-pending'}">
+                                ${status}
                             </div>
                         `;
                         ordersList.appendChild(orderEl);
                     });
                 }
             }
-        }
         }
 
         // --- DOMContentLoaded ---

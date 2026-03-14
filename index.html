@@ -3546,7 +3546,7 @@
                     <div class="compare-table-wrapper" id="compareTable">
                         <!-- Mobile Cards -->
                         <div class="mobile-compare-card">
-                            <div class="mobile-compare-header">
+                            <div                             class="mobile-compare-header">
                                 <span class="mobile-compare-title">Starter Landing Page</span>
                                 <span class="mobile-compare-price">RM399</span>
                             </div>
@@ -4833,7 +4833,7 @@
                     
                     <button id="googleLoginBtn" class="google-btn">
                         <svg width="20" height="20" viewBox="0 0 48 48">
-                            <path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c0-6.627,5.373-12,12-12c0-6.627,5.373-12,12-12c0-6.627,5.373-12,12-12c0-6.627,5.373-12,12-12c0-6.627,5.373-12,12-12c0-6.627,5.373-12,12-12c0-6.627,5.373-12,12-12c0-3.059,1.154-5.85,3.038-7.975l-5.848-5.848C5.058,13.033,3.411,16.319,3.411,20c0,11.428,9.162,20.589,20.589,20.589c11.428,0,20.589-9.162,20.589-20.589C44.589,22.586,44.268,21.278,43.611,20.083z"/>
+                            <path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c0-6.627,5.373-12,12-12c0-6.627,5.373-12,12-12c0-6.627,5.373-12,12-12c0-6.627,5.373-12,12-12c0-6.627,5.373-12,12-12c0-3.059,1.154-5.85,3.038-7.975l-5.848-5.848C5.058,13.033,3.411,16.319,3.411,20c0,11.428,9.162,20.589,20.589,20.589c11.428,0,20.589-9.162,20.589-20.589C44.589,22.586,44.268,21.278,43.611,20.083z"/>
                             <path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.975,3.038l5.848-5.848C34.046,6.053,29.268,3.411,24,3.411c-8.918,0-16.553,5.686-19.028,13.463L6.306,14.691z"/>
                             <path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"/>
                             <path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"/>
@@ -4908,7 +4908,7 @@
                                     <div>
                                         <div style="font-size: 12px; opacity: 0.8; margin-bottom: 4px;">Current Active Plan</div>
                                         <h3 style="font-size: 20px; font-weight: 700;" id="dbPlanName">Loading...</h3>
-                                        <div class="status-badge status-active" style="margin-top: 12px;">
+                                        <div class="status-badge status-active" style="margin-top: 12px;" id="dbPlanStatusBadge">
                                             <i class="ri-checkbox-circle-fill"></i> Active
                                         </div>
                                     </div>
@@ -6815,12 +6815,33 @@
                     document.getElementById('dbPlanName').textContent = "No Active Plan";
                     document.getElementById('dbPlanPrice').textContent = "-";
                     document.getElementById('dbDomainName').textContent = "-";
+                    document.getElementById('dbPlanStatusBadge').innerHTML = '<i class="ri-time-line"></i> Inactive';
+                    document.getElementById('dbPlanStatusBadge').className = "status-badge status-pending";
                 } else {
                     const latestOrder = orders[0]; 
                     
                     document.getElementById('dbPlanName').textContent = latestOrder.planName || 'Custom Plan';
                     document.getElementById('dbPlanPrice').textContent = 'RM' + (latestOrder.price || '0');
                     document.getElementById('dbDomainName').textContent = latestOrder.domain || 'Custom Domain';
+                    
+                    // FIX: Check database status for 'Activated'
+                    const dbStatus = latestOrder.status;
+                    const statusBadge = document.getElementById('dbPlanStatusBadge');
+                    const domainStatus = document.getElementById('dbDomainStatus');
+                    
+                    if(dbStatus === 'Activated') {
+                        statusBadge.innerHTML = '<i class="ri-checkbox-circle-fill"></i> Active';
+                        statusBadge.className = "status-badge status-active";
+                        domainStatus.innerHTML = '<i class="ri-check-line"></i> Live';
+                        domainStatus.className = "status-badge status-active";
+                    } else {
+                        statusBadge.innerHTML = '<i class="ri-time-line"></i> ' + (dbStatus || 'Pending');
+                        statusBadge.className = "status-badge status-pending";
+                        domainStatus.innerHTML = '<i class="ri-loader-4-line"></i> Pending Setup';
+                        domainStatus.className = "status-badge status-pending";
+                        domainStatus.style.background = "rgba(245, 158, 11, 0.1)";
+                        domainStatus.style.color = "#f59e0b";
+                    }
                     
                     orders.forEach(order => {
                         const date = order.createdAt ? new Date(order.createdAt.seconds * 1000).toLocaleDateString() : 'Pending';
@@ -6833,7 +6854,7 @@
                                 <div style="font-weight: 700; font-size: 15px;">${order.planName || 'Custom Order'}</div>
                                 <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Ordered on: ${date}</div>
                             </div>
-                            <div class="status-badge ${status === 'Completed' ? 'status-active' : 'status-pending'}">
+                            <div class="status-badge ${status === 'Activated' ? 'status-active' : 'status-pending'}">
                                 ${status}
                             </div>
                         `;

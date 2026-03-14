@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -3057,6 +3057,7 @@
 <base target="_blank">
 <base target="_blank">
 <base target="_blank">
+<base target="_blank">
 </head>
 <body>
 
@@ -5576,7 +5577,386 @@
 
     <!-- Custom Newsletter Handler -->
     <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    
+// =========================================
+// PERSISTENCE FIXES - Checkout data survives refresh
+// =========================================
+
+const CHECKOUT_STORAGE_KEY = 'ddnex_checkout_data';
+
+// Save checkout data to localStorage
+function saveCheckoutData() {
+    if (tempOrderData && tempOrderData.planName) {
+        localStorage.setItem(CHECKOUT_STORAGE_KEY, JSON.stringify({
+            ...tempOrderData,
+            savedAt: new Date().toISOString()
+        }));
+    }
+}
+
+// Restore checkout data from localStorage
+function restoreCheckoutData() {
+    try {
+        const saved = localStorage.getItem(CHECKOUT_STORAGE_KEY);
+        if (saved) {
+            const data = JSON.parse(saved);
+            const user = window.firebaseAuth ? window.firebaseAuth.getUser() : null;
+
+            // Only restore if user matches and data is recent (within 24 hours)
+            if (user && data.userId === user.uid) {
+                const savedTime = new Date(data.savedAt || 0);
+                const now = new Date();
+                const hoursDiff = (now - savedTime) / (1000 * 60 * 60);
+
+                if (hoursDiff < 24) {
+                    tempOrderData = data;
+
+                    // If on checkout page, restore UI
+                    const checkoutSection = document.getElementById('checkout');
+                    if (checkoutSection && checkoutSection.classList.contains('active')) {
+                        restoreCheckoutUI();
+                    }
+                    return true;
+                } else {
+                    localStorage.removeItem(CHECKOUT_STORAGE_KEY);
+                }
+            } else {
+                localStorage.removeItem(CHECKOUT_STORAGE_KEY);
+            }
+        }
+    } catch (e) {
+        console.error('Error restoring checkout:', e);
+        localStorage.removeItem(CHECKOUT_STORAGE_KEY);
+    }
+    return false;
+}
+
+// Restore checkout UI elements
+function restoreCheckoutUI() {
+    if (!tempOrderData.planName) return;
+
+    const planNameEl = document.getElementById('coPlanName');
+    const planPriceEl = document.getElementById('coPlanPrice');
+
+    if (planNameEl) planNameEl.textContent = tempOrderData.planName;
+    if (planPriceEl && tempOrderData.price) {
+        planPriceEl.textContent = 'RM' + tempOrderData.price.toLocaleString();
+    }
+
+    // Restore payment options
+    if (tempOrderData.price) {
+        calculatePaymentOptions(tempOrderData.price, tempOrderData.planName);
+    }
+
+    // Restore domain
+    if (tempOrderData.domain) {
+        const domainInput = document.getElementById('coDomainInput');
+        if (domainInput) {
+            if (tempOrderData.domain.includes('.ddnex.com')) {
+                setDomainType('ddnex');
+                domainInput.value = tempOrderData.domain.replace('.ddnex.com', '');
+                updateDomainPreview(domainInput.value);
+            } else {
+                setDomainType('custom');
+                domainInput.value = tempOrderData.domain;
+                updateDomainPreview(tempOrderData.domain);
+            }
+        }
+    }
+}
+
+// Clear checkout data
+function clearCheckoutData() {
+    localStorage.removeItem(CHECKOUT_STORAGE_KEY);
+    tempOrderData = {};
+}
+
+// =========================================
+// ENHANCED PROFILE & ORDERS DISPLAY
+// =========================================
+
+// Generate Smart ID for orders (IDNX-XXXX format)
+function generateSmartId() {
+    const prefix = 'IDNX';
+    const randomNum = Math.floor(1000 + Math.random() * 9000);
+    return `${prefix}-${randomNum}`;
+}
+
+// Enhanced loadProfileData with proper DB field mapping matching orders_ddnex structure
+async function enhancedLoadProfileData() {
+    const user = window.firebaseAuth ? window.firebaseAuth.getUser() : null;
+    if (!user) return;
+
+    // Update profile header
+    document.getElementById('profileNameDisplay').textContent = user.displayName || "User";
+    document.getElementById('profileEmailDisplay').textContent = user.email;
+    document.getElementById('profileAvatarInitials').textContent = (user.displayName || "U").charAt(0).toUpperCase();
+
+    // Update settings
+    document.getElementById('settingsName').value = user.displayName || "";
+    document.getElementById('settingsEmail').value = user.email || "";
+
+    const ordersList = document.getElementById('ordersList');
+    const loading = document.getElementById('ordersLoading');
+
+    if(window.firebaseDB) {
+        loading.style.display = 'block';
+        ordersList.innerHTML = '';
+
+        const orders = await window.firebaseDB.getOrders();
+        loading.style.display = 'none';
+
+        if(orders.length === 0) {
+            ordersList.innerHTML = `<div style="text-align:center; padding: 40px; color: var(--text-muted);">No orders found.</div>`;
+            document.getElementById('dbPlanName').textContent = "No Active Plan";
+            document.getElementById('dbPlanPrice').textContent = "-";
+            document.getElementById('dbDomainName').textContent = "-";
+            document.getElementById('dbPlanStatusBadge').innerHTML = '<i class="ri-time-line"></i> Inactive';
+            document.getElementById('dbPlanStatusBadge').className = "status-badge status-pending";
+        } else {
+            // Sort by createdAt descending to get latest first
+            orders.sort((a, b) => {
+                const dateA = a.createdAt?.seconds || 0;
+                const dateB = b.createdAt?.seconds || 0;
+                return dateB - dateA;
+            });
+
+            const latestOrder = orders[0]; 
+
+            // Map database fields to UI - using exact field names from orders_ddnex
+            document.getElementById('dbPlanName').textContent = latestOrder.planName || latestOrder.description || 'Custom Plan';
+            document.getElementById('dbPlanPrice').textContent = 'RM' + (latestOrder.price || latestOrder.total || latestOrder.grandTotal || '0').toLocaleString();
+            document.getElementById('dbDomainName').textContent = latestOrder.domain || 'Custom Domain';
+
+            // Format renewal date
+            const renewalDate = latestOrder.renewalDate || 'N/A';
+            document.getElementById('dbRenewalDate').textContent = renewalDate;
+
+            // Status handling with database status field
+            const dbStatus = latestOrder.status || 'Pending';
+            const statusBadge = document.getElementById('dbPlanStatusBadge');
+            const domainStatus = document.getElementById('dbDomainStatus');
+
+            if(dbStatus === 'Activated' || dbStatus === 'Active' || dbStatus === 'Paid') {
+                statusBadge.innerHTML = '<i class="ri-checkbox-circle-fill"></i> Active';
+                statusBadge.className = "status-badge status-active";
+                domainStatus.innerHTML = '<i class="ri-check-line"></i> Live';
+                domainStatus.className = "status-badge status-active";
+            } else if (dbStatus === 'Pending Payment' || dbStatus === 'Pending') {
+                statusBadge.innerHTML = '<i class="ri-time-line"></i> Pending Payment';
+                statusBadge.className = "status-badge status-pending";
+                domainStatus.innerHTML = '<i class="ri-loader-4-line"></i> Pending Setup';
+                domainStatus.className = "status-badge status-pending";
+                domainStatus.style.background = "rgba(245, 158, 11, 0.1)";
+                domainStatus.style.color = "#f59e0b";
+            } else {
+                statusBadge.innerHTML = `<i class="ri-time-line"></i> ${dbStatus}`;
+                statusBadge.className = "status-badge status-pending";
+            }
+
+            // Display all orders with full field mapping from orders_ddnex
+            orders.forEach(order => {
+                const date = order.createdAt ? new Date(order.createdAt.seconds * 1000).toLocaleDateString() : 
+                             order.date || 'Pending';
+
+                const status = order.status || 'Pending';
+                const orderNumber = order.number || order.id || generateSmartId();
+                const clientName = order.clientName || order.customerName || order.customerEmail || 'Unknown';
+                const description = order.description || order.planName || 'Website Order';
+                const total = order.total || order.grandTotal || order.price || 0;
+                const type = order.type || 'Invoice';
+
+                // Determine status styling
+                let statusClass = 'status-pending';
+                let statusIcon = 'ri-time-line';
+                if(status === 'Activated' || status === 'Active' || status === 'Paid') {
+                    statusClass = 'status-active';
+                    statusIcon = 'ri-checkbox-circle-fill';
+                } else if (status === 'Completed') {
+                    statusClass = 'status-active';
+                    statusIcon = 'ri-check-double-line';
+                }
+
+                const orderEl = document.createElement('div');
+                orderEl.style.cssText = "background: white; padding: 20px; border-radius: 12px; border: 1px solid var(--border-light); margin-bottom: 12px;";
+                orderEl.innerHTML = `
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+                        <div>
+                            <div style="font-weight: 700; font-size: 16px; color: var(--primary);">${orderNumber}</div>
+                            <div style="font-size: 13px; color: var(--text-secondary); margin-top: 4px;">${description}</div>
+                        </div>
+                        <div class="status-badge ${statusClass}" style="font-size: 11px;">
+                            <i class="${statusIcon}"></i> ${status}
+                        </div>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; font-size: 12px; color: var(--text-muted); border-top: 1px solid var(--border-light); padding-top: 12px;">
+                        <div>
+                            <span style="display: block; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Client</span>
+                            <span style="color: var(--text-main); font-weight: 500;">${clientName}</span>
+                        </div>
+                        <div>
+                            <span style="display: block; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Date</span>
+                            <span style="color: var(--text-main); font-weight: 500;">${date}</span>
+                        </div>
+                        <div>
+                            <span style="display: block; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Type</span>
+                            <span style="color: var(--text-main); font-weight: 500;">${type}</span>
+                        </div>
+                        <div style="text-align: right;">
+                            <span style="display: block; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Total</span>
+                            <span style="color: var(--primary); font-weight: 700; font-size: 14px;">RM${parseInt(total).toLocaleString()}</span>
+                        </div>
+                    </div>
+                    ${order.domain ? `<div style="margin-top: 8px; font-size: 11px; color: var(--text-muted);"><i class="ri-global-line"></i> ${order.domain}</div>` : ''}
+                `;
+                ordersList.appendChild(orderEl);
+            });
+        }
+    }
+}
+
+// =========================================
+// ENHANCED INITIATE CHECKOUT WITH PERSISTENCE
+// =========================================
+const originalInitiateCheckout = initiateCheckout;
+initiateCheckout = function(planName, price, domain) {
+    const user = window.firebaseAuth ? window.firebaseAuth.getUser() : null;
+    if (!user) {
+        showPopup("Login Required", "Please login or create an account to proceed with your order.");
+        handleNavigation('auth', null);
+        return;
+    }
+
+    // Set initial data
+    tempOrderData = {
+        planName: planName,
+        price: price,
+        domain: domain,
+        userId: user.uid,
+        timestamp: new Date().toISOString()
+    };
+
+    // SAVE TO LOCALSTORAGE for persistence across refreshes
+    saveCheckoutData();
+
+    // UPDATE: Calculate and set the displayed Base Price immediately
+    const basePriceEl = document.getElementById('coPlanPrice');
+    if(basePriceEl) {
+        basePriceEl.textContent = 'RM' + price.toLocaleString();
+    }
+
+    // Also update the plan name display
+    document.getElementById('coPlanName').textContent = planName;
+
+    // Calculate payment options for the chosen plan
+    calculatePaymentOptions(price, planName);
+
+    // Handle Domain Logic
+    if(domain && domain.includes('.ddnex.com')) {
+        setDomainType('ddnex');
+        document.getElementById('coDomainInput').value = domain.replace('.ddnex.com', '');
+        updateDomainPreview(domain.replace('.ddnex.com', ''));
+    } else {
+        setDomainType('custom');
+        document.getElementById('coDomainInput').value = '';
+        updateDomainPreview('');
+    }
+
+    // Pre-fill User Info
+    document.getElementById('coFullName').value = user.displayName || "";
+    document.getElementById('coEmail').value = user.email || "";
+    document.getElementById('coPhone').value = ""; 
+
+    // Go to checkout
+    nextCheckoutStep(1);
+
+    handleNavigation('checkout', null);
+};
+
+// =========================================
+// ENHANCED SUBMIT ORDER WITH SMART ID
+// =========================================
+const originalSubmitOrder = submitOrder;
+submitOrder = async function() {
+    const btn = document.getElementById('btnPlaceOrder');
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '<i class="ri-loader-4-line ri-spin"></i> Processing...';
+    btn.disabled = true;
+
+    // Generate smart ID for the order
+    const smartId = window.generateSmartId ? window.generateSmartId() : 'IDNX-' + Math.floor(1000 + Math.random() * 9000);
+
+    const finalOrder = {
+        // Invoice/Order identification
+        number: smartId,
+        type: 'Invoice',
+
+        // Client information (matching DB structure)
+        clientName: document.getElementById('coFullName').value,
+        customerName: document.getElementById('coFullName').value,
+        customerEmail: document.getElementById('coEmail').value,
+        customerPhone: document.getElementById('coPhone').value,
+        customerCompany: document.getElementById('coCompany').value || '',
+        userId: tempOrderData.userId,
+
+        // Order details
+        description: tempOrderData.planName,
+        planName: tempOrderData.planName,
+        domain: tempOrderData.domain,
+        styleDescription: document.getElementById('coStyleDesc').value,
+
+        // Pricing (matching DB structure)
+        price: tempOrderData.price,
+        finalPrice: tempOrderData.finalPrice || tempOrderData.price,
+        subtotal: tempOrderData.price,
+        discount: tempOrderData.discount || 0,
+        total: tempOrderData.finalPrice || tempOrderData.price,
+        grandTotal: tempOrderData.finalPrice || tempOrderData.price,
+
+        // Payment info
+        paymentMethod: tempOrderData.paymentMethod || 'One-Time Payment',
+        paymentType: selectedPaymentOption === 'onetime' ? 'One-Time' : 'Installment',
+        installmentMonths: selectedPaymentOption === '12month' ? 12 : selectedPaymentOption === '24month' ? 24 : 0,
+        installmentCycle: 1,
+
+        // Status and dates
+        status: 'Pending Payment',
+        date: new Date().toISOString().split('T')[0],
+        renewalDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toLocaleDateString(),
+
+        // Timestamps
+        createdAt: new Date(),
+        updatedAt: new Date()
+    };
+
+    if (window.firebaseDB) {
+        const success = await window.firebaseDB.saveOrder(finalOrder);
+        if (success) {
+            clearCheckoutData(); // Clear localStorage after successful order
+            showPopup("Order Placed!", `Your order ${smartId} has been received. We will contact you shortly.`);
+            handleNavigation('profile', null);
+            document.getElementById('checkoutForm').reset();
+            document.getElementById('agreeTerms').checked = false;
+            togglePlaceOrderBtn();
+        } else {
+            showPopup("Error", "Could not place order. Please try again.");
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+        }
+    } else {
+        alert("System not ready. Please refresh.");
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+    }
+};
+
+// Override loadProfileData with enhanced version
+const originalLoadProfileData = loadProfileData;
+loadProfileData = enhancedLoadProfileData;
+
+
+
+document.addEventListener('DOMContentLoaded', function() {
         const sibForm = document.getElementById('sib-form');
         const customSuccess = document.getElementById('custom-success-message');
         const customError = document.getElementById('custom-error-message');
@@ -5780,10 +6160,11 @@
     </div>
 
     <!-- Firebase SDKs -->
+    <!-- Firebase SDKs -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, signInWithPopup, GoogleAuthProvider, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, query, where, getDocs, orderBy, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, query, where, getDocs, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = {
           apiKey: "AIzaSyAwf31b-wpYQwPbd-3DxnqGVRw8g3xq938",
@@ -5798,6 +6179,19 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
         const provider = new GoogleAuthProvider();
+
+        // Expose Firebase instances globally
+        window.firebaseApp = app;
+        window.firebaseAuthInstance = auth;
+        window.firebaseDBInstance = db;
+
+        // Generate Smart ID for orders (IDNX-XXXX format)
+        function generateSmartId() {
+            const prefix = 'IDNX';
+            const randomNum = Math.floor(1000 + Math.random() * 9000);
+            return `${prefix}-${randomNum}`;
+        }
+        window.generateSmartId = generateSmartId;
 
         window.firebaseAuth = {
             googleLogin: async () => {
@@ -5825,19 +6219,65 @@
                     console.error(error);
                 }
             },
-            getUser: () => auth.currentUser
+            getUser: () => auth.currentUser,
+            getAuth: () => auth,
+            onAuthStateChanged: (callback) => onAuthStateChanged(auth, callback)
         };
 
         window.firebaseDB = {
             saveOrder: async (orderData) => {
                 try {
                     const collectionName = "orders_ddnex";
-                    await addDoc(collection(db, collectionName), {
-                        ...orderData,
-                        createdAt: new Date(),
-                        userId: auth.currentUser ? auth.currentUser.uid : 'guest'
-                    });
-                    console.log(`Document saved to ${collectionName}`);
+                    // Generate smart ID if not provided
+                    if (!orderData.number) {
+                        orderData.number = generateSmartId();
+                    }
+                    // Ensure all required fields from DB structure
+                    const finalOrderData = {
+                        // Invoice/Order identification
+                        number: orderData.number || generateSmartId(),
+                        type: orderData.type || 'Invoice',
+
+                        // Client information
+                        clientName: orderData.clientName || orderData.customerName || '',
+                        customerName: orderData.customerName || '',
+                        customerEmail: orderData.customerEmail || '',
+                        customerPhone: orderData.customerPhone || '',
+                        customerCompany: orderData.customerCompany || '',
+                        userId: orderData.userId || (auth.currentUser ? auth.currentUser.uid : 'guest'),
+
+                        // Order details
+                        description: orderData.description || orderData.planName || '',
+                        planName: orderData.planName || '',
+                        domain: orderData.domain || '',
+                        styleDescription: orderData.styleDescription || '',
+
+                        // Pricing
+                        price: orderData.price || 0,
+                        finalPrice: orderData.finalPrice || orderData.price || 0,
+                        subtotal: orderData.subtotal || orderData.price || 0,
+                        discount: orderData.discount || 0,
+                        total: orderData.total || orderData.grandTotal || orderData.finalPrice || orderData.price || 0,
+                        grandTotal: orderData.grandTotal || orderData.total || orderData.finalPrice || orderData.price || 0,
+
+                        // Payment info
+                        paymentMethod: orderData.paymentMethod || 'One-Time Payment',
+                        paymentType: orderData.paymentType || 'One-Time',
+                        installmentMonths: orderData.installmentMonths || 0,
+                        installmentCycle: orderData.installmentCycle || 1,
+
+                        // Status and dates
+                        status: orderData.status || 'Pending Payment',
+                        date: orderData.date || new Date().toISOString().split('T')[0],
+                        renewalDate: orderData.renewalDate || '',
+
+                        // Timestamps
+                        createdAt: orderData.createdAt || new Date(),
+                        updatedAt: new Date()
+                    };
+
+                    await addDoc(collection(db, collectionName), finalOrderData);
+                    console.log(`Document saved to ${collectionName} with ID: ${finalOrderData.number}`);
                     return true;
                 } catch (error) {
                     console.error("Error saving order:", error);
@@ -5865,17 +6305,26 @@
             }
         };
 
+        // IMMEDIATE AUTH STATE CHECK - Fix for Issue #1
+        // This ensures auth state is checked as soon as Firebase initializes
         onAuthStateChanged(auth, (user) => {
             if (user) {
+                console.log('User is signed in:', user.uid);
                 window.updateAuthUI(true, user);
+
+                // If on auth page, redirect to profile
                 const currentSection = document.querySelector('.page-section.active');
                 if(currentSection && currentSection.id === 'auth') {
                     window.handleNavigation('profile', null);
                 }
             } else {
+                console.log('User is signed out');
                 window.updateAuthUI(false, null);
+
+                // If on protected pages, redirect to auth
                 const currentSection = document.querySelector('.page-section.active');
-                if(currentSection && currentSection.id === 'profile') {
+                const protectedPages = ['profile', 'checkout'];
+                if(currentSection && protectedPages.includes(currentSection.id)) {
                     window.handleNavigation('auth', null);
                 }
             }

@@ -3058,7 +3058,6 @@
 <base target="_blank">
 <base target="_blank">
 <base target="_blank">
-<base target="_blank">
 </head>
 <body>
 
@@ -4868,12 +4867,7 @@
         <section id="profile" class="page-section">
             <div class="section-padding">
                 <div class="container">
-                    <div class="profile-container reveal" style="position: relative;">
-                        <!-- Auth Loading Overlay - Shows while Firebase auth initializes -->
-                        <div id="profileAuthLoading" style="position: absolute; inset: 0; background: white; z-index: 100; display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 24px; transition: opacity 0.3s ease;">
-                            <i class="ri-loader-4-line ri-spin" style="font-size: 40px; color: var(--primary); margin-bottom: 16px;"></i>
-                            <p style="color: var(--text-secondary); font-size: 14px;">Loading your profile...</p>
-                        </div>
+                    <div class="profile-container reveal">
                         <!-- Sidebar -->
                         <aside class="profile-sidebar">
                             <div class="profile-avatar-section">
@@ -5816,17 +5810,7 @@ async function enhancedLoadProfileData() {
                     ${order.domain ? `<div style="margin-top: 8px; font-size: 11px; color: var(--text-muted);"><i class="ri-global-line"></i> ${order.domain}</div>` : ''}
                 `;
                 ordersList.appendChild(orderEl);
-            })
-
-            // Hide loading overlay with fade effect
-            const finalLoadingOverlay = document.getElementById('profileAuthLoading');
-            if (finalLoadingOverlay) {
-                finalLoadingOverlay.style.opacity = '0';
-                setTimeout(() => {
-                    finalLoadingOverlay.style.display = 'none';
-                }, 300);
-            }
-            ;
+            });
         }
     }
 }
@@ -6332,16 +6316,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 const currentSection = document.querySelector('.page-section.active');
                 if(currentSection && currentSection.id === 'auth') {
                     window.handleNavigation('profile', null);
-                }
-
-                // IMPORTANT: If on profile page and auth just became ready, load profile data
-                // This handles the case where user refreshes on /profile page
-                if(currentSection && currentSection.id === 'profile') {
-                    console.log('Auth ready on profile page, loading data...');
-                    // Small delay to ensure DOM is ready
-                    setTimeout(() => {
-                        if(window.loadProfileData) window.loadProfileData();
-                    }, 100);
                 }
             } else {
                 console.log('User is signed out');
@@ -7265,34 +7239,8 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         async function loadProfileData() {
-            // Show loading overlay immediately
-            const loadingOverlay = document.getElementById('profileAuthLoading');
-            if (loadingOverlay) {
-                loadingOverlay.style.display = 'flex';
-                loadingOverlay.style.opacity = '1';
-            }
-
-            // Wait for Firebase auth to be ready (with timeout protection)
-            let user = window.firebaseAuth ? window.firebaseAuth.getUser() : null;
-            let retries = 0;
-            const maxRetries = 100; // 10 seconds max wait (100ms * 100)
-
-            // Keep checking until auth is ready or timeout
-            while (!user && retries < maxRetries) {
-                await new Promise(resolve => setTimeout(resolve, 100));
-                user = window.firebaseAuth ? window.firebaseAuth.getUser() : null;
-                retries++;
-            }
-
-            // If still no user after waiting, redirect to login
-            if (!user) {
-                console.log('No user found after waiting, redirecting to auth');
-                if (loadingOverlay) loadingOverlay.style.display = 'none';
-                handleNavigation('auth', null);
-                return;
-            }
-
-            console.log('User authenticated:', user.uid);
+            const user = window.firebaseAuth ? window.firebaseAuth.getUser() : null;
+            if (!user) return;
 
             document.getElementById('profileNameDisplay').textContent = user.displayName || "User";
             document.getElementById('profileEmailDisplay').textContent = user.email;

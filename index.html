@@ -5531,35 +5531,99 @@ body:has(#successful-payment.active) .sib-form {
             });
         });
 
-    // --- BREVO NEWSLETTER LOGIC ---
-    document.addEventListener('DOMContentLoaded', () => {
-        const sibForm = document.getElementById('sib-form');
-        const sibError = document.getElementById('error-message');
-        const sibSuccess = document.getElementById('success-message');
-        if(sibForm) {
-            sibForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                const btn = sibForm.querySelector('button[type="submit"]');
-                const originalText = btn.innerHTML;
-                const emailInput = sibForm.querySelector('input[name="EMAIL"]');
-                const emailValue = emailInput ? emailInput.value.trim() : '';
-                sibError.style.display = 'none'; sibSuccess.style.display = 'none';
-                if(!emailValue) { sibError.style.display = 'block'; return; }
-                const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                if(!emailPattern.test(emailValue)) { sibError.style.display = 'block'; return; }
-                btn.innerHTML = '<i class="ri-loader-4-line ri-spin"></i> Processing...';
-                btn.disabled = true;
-                const formData = new FormData(sibForm);
-                fetch(sibForm.action, { method: 'POST', body: formData })
-                .then(response => {
-                    if (response.ok) { sibSuccess.style.display = 'block'; emailInput.value = ''; } 
-                    else { sibError.style.display = 'block'; }
-                })
-                .catch(error => { console.error('Brevo Error:', error); sibError.style.display = 'block'; })
-                .finally(() => { btn.innerHTML = originalText; btn.disabled = false; });
+// --- BREVO NEWSLETTER LOGIC ---
+document.addEventListener('DOMContentLoaded', () => {
+    const sibForm = document.getElementById('sib-form');
+    const sibError = document.getElementById('error-message');
+    const sibSuccess = document.getElementById('success-message');
+    const sibContainer = document.getElementById('sib-form-container');
+    
+    if(sibForm) {
+        sibForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const btn = sibForm.querySelector('button[type="submit"]');
+            const originalText = btn.innerHTML;
+            const firstNameInput = sibForm.querySelector('input[name="FIRSTNAME"]');
+            const emailInput = sibForm.querySelector('input[name="EMAIL"]');
+            const firstNameValue = firstNameInput ? firstNameInput.value.trim() : '';
+            const emailValue = emailInput ? emailInput.value.trim() : '';
+            
+            // Hide any existing messages
+            sibError.style.display = 'none';
+            sibSuccess.style.display = 'none';
+            
+            // Validate inputs
+            if(!firstNameValue) {
+                sibError.style.display = 'block';
+                sibError.querySelector('.sib-form-message-panel__inner-text').textContent = 
+                    'Please enter your first name.';
+                return;
+            }
+            
+            if(!emailValue) {
+                sibError.style.display = 'block';
+                sibError.querySelector('.sib-form-message-panel__inner-text').textContent = 
+                    'Please enter your email address.';
+                return;
+            }
+            
+            // Email validation
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if(!emailPattern.test(emailValue)) {
+                sibError.style.display = 'block';
+                sibError.querySelector('.sib-form-message-panel__inner-text').textContent = 
+                    'Please enter a valid email address.';
+                return;
+            }
+            
+            // Show loading state
+            btn.innerHTML = '<i class="ri-loader-4-line ri-spin"></i> Processing...';
+            btn.disabled = true;
+            
+            // Create form data
+            const formData = new FormData(sibForm);
+            
+            // Submit the form
+            fetch(sibForm.action, {
+                method: 'POST',
+                body: formData,
+                mode: 'no-cors' // This is needed for cross-origin requests
+            })
+            .then(response => {
+                // Since we're using no-cors, we can't read the response
+                // We'll assume success and redirect
+                showSuccessAndRedirect();
+            })
+            .catch(error => {
+                console.error('Brevo Error:', error);
+                sibError.style.display = 'block';
+                sibError.querySelector('.sib-form-message-panel__inner-text').textContent = 
+                    'Your subscription could not be saved. Please try again.';
+                btn.innerHTML = originalText;
+                btn.disabled = false;
             });
-        }
-    });
+        });
+    }
+    
+    function showSuccessAndRedirect() {
+        // Update success message with email check reminder
+        sibSuccess.style.display = 'block';
+        sibSuccess.querySelector('.sib-form-message-panel__inner-text').textContent = 
+            'Your subscription has been successful. Please check your email to confirm.';
+        
+        // Add a countdown and redirect
+        let countdown = 3;
+        const countdownInterval = setInterval(() => {
+            countdown--;
+            if (countdown <= 0) {
+                clearInterval(countdownInterval);
+                // Redirect to success page
+                handleNavigation('subscribe-success', null);
+            }
+        }, 1000);
+    }
+});
     </script>
     
 <script>

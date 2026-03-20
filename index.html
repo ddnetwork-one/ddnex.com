@@ -1141,25 +1141,41 @@
         .team-socials a { color: var(--text-muted); transition: 0.2s; font-size: 18px; }
         .team-socials a:hover { color: var(--primary); transform: translateY(-2px); }
 
-        /* =========================================
-           PRICING SECTION - STRIPE INTEGRATION
-           ========================================= */
-        .pricing-section {
-            padding: 60px 0;
-            background: #ffffff; /* Pure White */
-        }
+/* =========================================
+   PRICING SECTION - STRIPE CENTERED (1 ROW FIX)
+   ========================================= */
+.pricing-section {
+    padding: 60px 0;
+    background: #ffffff;
+    overflow-x: hidden; 
+}
+
+@media(min-width: 768px) { .pricing-section { padding: 100px 0; } }
+
+.stripe-pricing-wrapper {
+    width: 100%;
+    margin: 0 auto; 
+    padding: 0 20px; /* Slightly more padding */
+    min-width: 0;
+}
+
+/* FORCE 1 ROW ON DESKTOP */
+@media (min-width: 1024px) {
+    .stripe-pricing-wrapper {
+        /* 1. Increase width significantly to fit 3 cards */
+        max-width: 1400px; 
         
-        @media(min-width: 768px) { .pricing-section { padding: 100px 0; } }
-
-        .stripe-pricing-wrapper {
-            max-width: 1200px;
-            margin: 0 auto;
-            background: #ffffff;
-            border-radius: 24px;
-            padding: 20px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.01), 0 2px 4px -1px rgba(0, 0, 0, 0.01); /* Very subtle shadow */
-        }
-
+        /* 2. Pull it out of the text container slightly so it centers on the screen */
+        margin-left: auto;
+        margin-right: auto;
+        left: 50%;
+        transform: translateX(0);
+        
+        /* 3. Ensure no wrapping */
+        display: block;
+        width: 95%; /* Use 95% of screen width for maximum space */
+    }
+}
         /* =========================================
            COMPARISON TABLE
            ========================================= */
@@ -2890,13 +2906,12 @@
                         <p>Professional websites and digital systems built for startups, SMEs, and enterprises. Secure payments powered by Stripe.</p>
                     </div>
                     
-                    <!-- STRIPE PRICING TABLE -->
-                    <div class="stripe-pricing-wrapper reveal">
-                        <stripe-pricing-table pricing-table-id="prctbl_1TCHh27TzVI5KBwlZ71FNJPz"
-                        publishable-key="pk_live_51TCE7c7TzVI5KBwlo5A9OWBN5Ub4Ccr5L0iwzPIjCozeSGLiBmV6jzbmh9mvLmg6xveJN9zK4nHZMBUhqsQ5z6Lj0012fJkd42">
-                        </stripe-pricing-table>
-                    </div>
-
+<!-- STRIPE PRICING TABLE -->
+<div class="stripe-pricing-wrapper reveal">
+    <stripe-pricing-table pricing-table-id="prctbl_1TCHh27TzVI5KBwlZ71FNJPz"
+    publishable-key="pk_live_51TCE7c7TzVI5KBwlo5A9OWBN5Ub4Ccr5L0iwzPIjCozeSGLiBmV6jzbmh9mvLmg6xveJN9zK4nHZMBUhqsQ5z6Lj0012fJkd42">
+    </stripe-pricing-table>
+</div>
                     <!-- Optional Add-ons -->
                     <div class="addons-section reveal">
                         <h3 class="addons-title">Optional Add-Ons</h3>
